@@ -4,7 +4,7 @@ import profileAvatar from "@/assets/profile-avatar.png";
 
 export const ProfileHeader = () => {
   return (
-    <div className="flex items-center justify-between p-4 bg-background">
+    <div className="flex items-center justify-between p-4" style={{ background: 'var(--gradient-pale)' }}>
       <div className="flex items-center gap-3">
         <Avatar className="h-12 w-12">
           <AvatarImage src={profileAvatar} alt="Emma's profile" />
