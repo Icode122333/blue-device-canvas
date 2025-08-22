@@ -1,8 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Settings } from "lucide-react";
+import { Bell, Settings, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import profileAvatar from "@/assets/profile-avatar.png";
 
 export const ProfileHeader = () => {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div className="flex items-center justify-between p-4" style={{ background: 'var(--gradient-pale)' }}>
       <div className="flex items-center gap-3">
@@ -22,6 +28,14 @@ export const ProfileHeader = () => {
         <button className="p-2 rounded-full hover:bg-secondary transition-colors">
           <Settings className="h-5 w-5 text-muted-foreground" />
         </button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleSignOut}
+          className="p-2 rounded-full hover:bg-secondary transition-colors"
+        >
+          <LogOut className="h-5 w-5 text-muted-foreground" />
+        </Button>
       </div>
     </div>
   );

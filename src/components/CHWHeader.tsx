@@ -1,8 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Settings } from "lucide-react";
+import { Bell, Settings, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CHWHeader = () => {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div className="bg-card border-b border-border p-4">
       <div className="flex items-center justify-between">
@@ -26,6 +32,14 @@ export const CHWHeader = () => {
           <button className="p-2 rounded-full hover:bg-secondary transition-colors">
             <Settings className="h-5 w-5 text-muted-foreground" />
           </button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}
+            className="p-2 rounded-full hover:bg-secondary transition-colors"
+          >
+            <LogOut className="h-5 w-5 text-muted-foreground" />
+          </Button>
         </div>
       </div>
     </div>
