@@ -9,6 +9,7 @@ import { Navigation } from "@/components/Navigation";
 import { InfoCard } from "@/components/InfoCard";
 import { ExerciseList } from "@/components/ExerciseList";
 import { AppointmentList } from "@/components/AppointmentList";
+import { Community } from "@/components/Community";
 
 export const AppWrapper = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -117,6 +118,7 @@ export const AppWrapper = () => {
         </>
       )}
       {activeTab === "devices" && <ExerciseList />}
+      {activeTab === "community" && <Community />}
     </div>
   );
 };
