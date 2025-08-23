@@ -3,8 +3,26 @@ import { Bell, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import profileAvatar from "@/assets/profile-avatar.png";
+import { useState, useEffect } from "react";
 
 export const ProfileHeader = () => {
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const user = (await supabase.auth.getUser()).data.user;
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        setUserProfile(data);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
@@ -12,9 +30,14 @@ export const ProfileHeader = () => {
   return (
     <div className="flex items-center justify-between p-4" style={{ background: 'var(--gradient-pale)' }}>
       <div className="flex items-center gap-3">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src={profileAvatar} alt="Emma's profile" />
-          <AvatarFallback>EM</AvatarFallback>
+        <Avatar className="h-12 w-12 border-2 border-primary/20">
+          <AvatarImage 
+            src={userProfile?.avatar_url || profileAvatar} 
+            alt="Profile picture" 
+          />
+          <AvatarFallback className="bg-primary/10 text-primary font-medium">
+            {userProfile?.user_id ? userProfile.user_id.charAt(0).toUpperCase() : "U"}
+          </AvatarFallback>
         </Avatar>
         <div>
           <h1 className="text-lg font-semibold text-foreground">Emma's Journey</h1>

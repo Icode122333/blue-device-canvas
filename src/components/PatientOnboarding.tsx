@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ImageUpload } from "@/components/ImageUpload";
 
 interface PatientOnboardingProps {
   onComplete: () => void;
@@ -18,6 +19,7 @@ export const PatientOnboarding = ({ onComplete }: PatientOnboardingProps) => {
     motherPhone: "",
     problemFirstNoticed: ""
   });
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -51,7 +53,10 @@ export const PatientOnboarding = ({ onComplete }: PatientOnboardingProps) => {
       // Update profile to mark onboarding as completed
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ onboarding_completed: true })
+        .update({ 
+          onboarding_completed: true,
+          avatar_url: avatarUrl || null
+        })
         .eq('user_id', user.id);
 
       if (profileError) throw profileError;
@@ -75,7 +80,16 @@ export const PatientOnboarding = ({ onComplete }: PatientOnboardingProps) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex flex-col items-center space-y-4">
+              <h3 className="text-lg font-medium">Profile Photo</h3>
+              <ImageUpload 
+                currentImageUrl={avatarUrl}
+                onImageUploaded={setAvatarUrl}
+                size="lg"
+              />
+            </div>
+            
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name</Label>
               <Input
