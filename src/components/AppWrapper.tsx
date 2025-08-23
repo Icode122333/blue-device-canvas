@@ -15,6 +15,7 @@ export const AppWrapper = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("home");
 
   useEffect(() => {
     // Set up auth state listener
@@ -108,10 +109,14 @@ export const AppWrapper = () => {
   return (
     <div className="min-h-screen bg-secondary/20 pb-28">
       <ProfileHeader />
-      <Navigation />
-      <InfoCard />
-      <ExerciseList />
-      <AppointmentList />
+      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      {activeTab === "home" && (
+        <>
+          <InfoCard />
+          <AppointmentList />
+        </>
+      )}
+      {activeTab === "devices" && <ExerciseList />}
     </div>
   );
 };

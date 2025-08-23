@@ -1,104 +1,141 @@
-import { Dumbbell, Clock, ChevronRight, User, Heart } from "lucide-react";
+import { useState } from "react";
+import { Search, ChevronRight, Clock, RotateCcw } from "lucide-react";
 
-// Light-mode adaptation of nike_design_system.json
-// - Accent brand: #c5f82a
-// - Cards: white background, subtle border/shadow
-// - Typography: dark text for readability
+const categories = [
+  { id: "cardio", label: "Cardio" },
+  { id: "strength", label: "Strength" },
+  { id: "stretching", label: "Stretching" },
+  { id: "fullbody", label: "Full Body" },
+];
 
 const exercises = [
   {
     id: 1,
-    title: "Full Body Mobility",
-    difficulty: "Beginner",
-    duration: "10 min",
-    instructor: "Alex Morgan",
-    liked: true,
+    title: "Dumbbell Shoulder Press",
+    difficulty: "Easy",
+    duration: "30 sec",
+    reps: "3 reps",
+    category: "strength",
+    image: "/placeholder.svg"
   },
   {
     id: 2,
-    title: "Core Strength Blast",
-    difficulty: "Intermediate",
-    duration: "15 min",
-    instructor: "Jordan Lee",
-    liked: false,
+    title: "Bench Press",
+    difficulty: "Medium",
+    duration: "30 sec",
+    reps: "4 reps",
+    category: "strength",
+    image: "/placeholder.svg"
   },
   {
     id: 3,
-    title: "Balance & Stability",
-    difficulty: "Intermediate",
-    duration: "12 min",
-    instructor: "Taylor Brooks",
-    liked: false,
+    title: "Battle Ropes",
+    difficulty: "Hard",
+    duration: "30 sec",
+    reps: "4 reps",
+    category: "cardio",
+    image: "/placeholder.svg"
+  },
+  {
+    id: 4,
+    title: "Seated Dumbbell Shoulder Press",
+    difficulty: "Hard",
+    duration: "30 sec",
+    reps: "4 reps",
+    category: "strength",
+    image: "/placeholder.svg"
   },
 ];
 
 export const ExerciseList = () => {
+  const [activeCategory, setActiveCategory] = useState("strength");
+
+  const filteredExercises = exercises.filter(ex => ex.category === activeCategory);
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case 'easy': return 'bg-green-500 text-white';
+      case 'medium': return 'bg-yellow-500 text-white';
+      case 'hard': return 'bg-red-500 text-white';
+      default: return 'bg-gray-500 text-white';
+    }
+  };
+
   return (
-    <section className="p-4">
-      {/* Section Header (light-mode) */}
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-[20px] font-semibold leading-tight text-slate-900">Today's Exercises</h2>
-        <button
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5f82a]"
-          aria-label="View all exercises"
-        >
-          View all
-        </button>
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 pt-16">
+        <h1 className="text-2xl font-bold">Exercises</h1>
+        <Search className="h-6 w-6 text-gray-400" />
       </div>
 
-      {/* Workout Cards (horizontal) */}
-      <div className="space-y-3">
-        {exercises.map((ex) => (
-          <article
-            key={ex.id}
-            className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-[#c5f82a]"
+      {/* Category Pills */}
+      <div className="px-4 pb-4">
+        <div className="flex gap-3 overflow-x-auto">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              className={`flex-shrink-0 rounded-full px-6 py-2 text-sm font-medium transition-colors ${
+                activeCategory === category.id
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Exercise Cards */}
+      <div className="px-4 space-y-4">
+        {filteredExercises.map((exercise) => (
+          <div
+            key={exercise.id}
+            className="bg-gray-800 rounded-2xl p-4 flex items-center gap-4"
           >
-            {/* Thumbnail */}
-            <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-              <Dumbbell className="h-6 w-6" />
+            {/* Exercise Image */}
+            <div className="w-20 h-20 rounded-xl bg-gray-700 overflow-hidden flex-shrink-0">
+              <img 
+                src={exercise.image} 
+                alt={exercise.title}
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            {/* Content */}
-            <div className="min-w-0 flex-1">
-              <h3 className="truncate text-[16px] font-medium text-slate-900">{ex.title}</h3>
-
-              {/* Metadata */}
-              <div className="mt-1 flex flex-wrap items-center gap-4 text-[12px] text-slate-600">
-                <span className="inline-flex items-center gap-1">
-                  <Dumbbell className="h-3.5 w-3.5" /> {ex.difficulty}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="h-3.5 w-3.5" /> {ex.duration}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <User className="h-3.5 w-3.5" /> {ex.instructor}
+            {/* Exercise Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between mb-2">
+                <h3 className="text-lg font-semibold text-white truncate pr-2">
+                  {exercise.title}
+                </h3>
+                <span className={`text-xs font-bold px-2 py-1 rounded-full ${getDifficultyColor(exercise.difficulty)}`}>
+                  {exercise.difficulty}
                 </span>
               </div>
-            </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <button
-                className={`inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5f82a] ${
-                  ex.liked
-                    ? "bg-[#ff4757]/10 text-[#ff4757] hover:bg-[#ff4757]/20"
-                    : "bg-slate-50 text-slate-500 hover:bg-slate-100"
-                }`}
-                aria-label={ex.liked ? "Unfavorite" : "Favorite"}
-              >
-                <Heart className={`h-5 w-5 ${ex.liked ? "fill-[#ff4757]" : ""}`} />
-              </button>
+              {/* Duration and Reps */}
+              <div className="flex items-center gap-4 text-sm text-gray-300">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span>{exercise.duration}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <RotateCcw className="h-4 w-4 text-yellow-500" />
+                  <span>{exercise.reps}</span>
+                </div>
+              </div>
 
-              <button
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-slate-900 ring-offset-transparent transition-colors hover:text-[#c5f82a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c5f82a]"
-                aria-label="Open exercise"
-              >
-                <ChevronRight className="h-5 w-5" />
+              {/* Start Button */}
+              <button className="mt-3 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                Start
+                <ChevronRight className="h-4 w-4" />
               </button>
             </div>
-          </article>
+          </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 };

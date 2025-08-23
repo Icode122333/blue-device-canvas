@@ -1,14 +1,14 @@
 import { Home, Play, Calendar, Users, MessageCircle } from "lucide-react";
 
 const tabs = [
-  { id: "home", label: "Home", icon: Home, active: true, variant: "default" },
-  { id: "devices", label: "Devices", icon: Play, active: false, variant: "primary" },
-  { id: "schedule", label: "Schedule", icon: Calendar, active: false, variant: "default" },
-  { id: "community", label: "Community", icon: Users, active: false, variant: "default" },
-  { id: "qa", label: "Q&A", icon: MessageCircle, active: false, variant: "default" },
+  { id: "home", label: "Home", icon: Home, variant: "default" },
+  { id: "devices", label: "Devices", icon: Play, variant: "primary" },
+  { id: "schedule", label: "Schedule", icon: Calendar, variant: "default" },
+  { id: "community", label: "Community", icon: Users, variant: "default" },
+  { id: "qa", label: "Q&A", icon: MessageCircle, variant: "default" },
 ];
 
-export const Navigation = () => {
+export const Navigation = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) => {
   return (
     <>
       {/* Bottom Pill Glass Navigation */}
@@ -17,22 +17,27 @@ export const Navigation = () => {
           <nav className="flex items-center justify-center gap-3 px-3 py-2">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
-              const isPrimary = tab.variant === "primary";
+              const isPrimary = tab.variant === "primary" && activeTab === tab.id;
+              const isActive = activeTab === tab.id;
               const baseBtn =
                 "flex items-center justify-center rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00ff88] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
               const primaryBtn =
                 "w-12 h-12 bg-[#00ff88] text-black shadow-[0_4px_16px_rgba(0,255,136,0.25)]";
               const defaultBtn = `${
-                tab.active
+                isActive
                   ? "bg-white/90 text-slate-900"
                   : "bg-white/60 text-slate-700 hover:bg-white/75"
               } border border-white/70 w-12 h-12`;
               return (
                 <div key={tab.id} className="flex flex-col items-center gap-1">
-                  <button aria-label={tab.label} className={`${baseBtn} ${isPrimary ? primaryBtn : defaultBtn}`}>
+                  <button 
+                    aria-label={tab.label} 
+                    className={`${baseBtn} ${isPrimary ? primaryBtn : defaultBtn}`}
+                    onClick={() => onTabChange(tab.id)}
+                  >
                     <IconComponent className="h-5 w-5" />
                   </button>
-                  <span className={`text-[11px] font-medium ${tab.active ? "text-slate-900" : "text-slate-700/90"}`}>
+                  <span className={`text-[11px] font-medium ${isActive ? "text-slate-900" : "text-slate-700/90"}`}>
                     {tab.label}
                   </span>
                 </div>
