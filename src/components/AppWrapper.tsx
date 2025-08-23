@@ -7,7 +7,7 @@ import { CHWDashboard } from "@/components/CHWDashboard";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { Navigation } from "@/components/Navigation";
 import { InfoCard } from "@/components/InfoCard";
-import { DeviceList } from "@/components/DeviceList";
+import { ExerciseList } from "@/components/ExerciseList";
 import { AppointmentList } from "@/components/AppointmentList";
 
 export const AppWrapper = () => {
@@ -106,11 +106,11 @@ export const AppWrapper = () => {
 
   // Patient Dashboard
   return (
-    <div className="min-h-screen bg-secondary/20 pb-20">
+    <div className="min-h-screen bg-secondary/20 pb-28">
       <ProfileHeader />
       <Navigation />
       <InfoCard />
-      <DeviceList />
+      <ExerciseList />
       <AppointmentList />
     </div>
   );

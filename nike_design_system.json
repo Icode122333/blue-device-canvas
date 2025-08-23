@@ -1,0 +1,376 @@
+{
+  "designSystem": {
+    "name": "Nike Training App Design System",
+    "version": "1.0",
+    "description": "Dark-themed fitness app design system with video content focus",
+    
+    "colorPalette": {
+      "primary": {
+        "background": "#000000",
+        "surface": "#1a1a1a",
+        "cardBackground": "#2a2a2a"
+      },
+      "accent": {
+        "brand": "#c5f82a",
+        "secondary": "#ffffff",
+        "heart": "#ff4757"
+      },
+      "text": {
+        "primary": "#ffffff",
+        "secondary": "#b8b8b8",
+        "muted": "#808080"
+      }
+    },
+    
+    "typography": {
+      "fontFamily": {
+        "primary": "SF Pro Display, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
+      },
+      "sizes": {
+        "title": {
+          "fontSize": "20px",
+          "fontWeight": "600",
+          "lineHeight": "1.2"
+        },
+        "subtitle": {
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "lineHeight": "1.4"
+        },
+        "body": {
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "lineHeight": "1.5"
+        },
+        "caption": {
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "lineHeight": "1.3"
+        },
+        "timer": {
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "fontFamily": "monospace"
+        }
+      }
+    },
+    
+    "layout": {
+      "spacing": {
+        "xs": "4px",
+        "sm": "8px",
+        "md": "16px",
+        "lg": "24px",
+        "xl": "32px"
+      },
+      "borderRadius": {
+        "small": "8px",
+        "medium": "12px",
+        "large": "16px"
+      },
+      "shadows": {
+        "card": "0 4px 12px rgba(0, 0, 0, 0.3)",
+        "overlay": "0 0 0 9999px rgba(0, 0, 0, 0.5)"
+      }
+    },
+    
+    "components": {
+      "navigationHeader": {
+        "height": "56px",
+        "backgroundColor": "transparent",
+        "position": "absolute",
+        "top": "0",
+        "zIndex": "100",
+        "elements": {
+          "backButton": {
+            "position": "left",
+            "icon": "chevron-left",
+            "color": "white",
+            "size": "24px"
+          },
+          "logo": {
+            "position": "center",
+            "type": "brand-logo",
+            "color": "accent.brand"
+          },
+          "settingsButton": {
+            "position": "right",
+            "icon": "settings",
+            "color": "white",
+            "size": "24px"
+          }
+        }
+      },
+      
+      "videoPlayer": {
+        "aspectRatio": "16:9",
+        "backgroundColor": "#000000",
+        "borderRadius": "medium",
+        "overlay": {
+          "gradient": "linear-gradient(transparent 60%, rgba(0,0,0,0.8) 100%)"
+        },
+        "controls": {
+          "playPause": {
+            "position": "center",
+            "size": "48px",
+            "color": "white",
+            "backgroundColor": "rgba(255,255,255,0.2)",
+            "backdropFilter": "blur(10px)",
+            "borderRadius": "50%"
+          },
+          "progressBar": {
+            "position": "bottom",
+            "height": "4px",
+            "backgroundColor": "rgba(255,255,255,0.3)",
+            "progressColor": "accent.brand",
+            "margin": "16px"
+          },
+          "timeDisplay": {
+            "position": "bottom-left",
+            "color": "white",
+            "fontSize": "caption",
+            "margin": "16px"
+          },
+          "fullscreenButton": {
+            "position": "bottom-right",
+            "color": "white",
+            "size": "16px",
+            "margin": "16px"
+          }
+        }
+      },
+      
+      "contentCard": {
+        "backgroundColor": "primary.surface",
+        "borderRadius": "large",
+        "padding": "lg",
+        "marginBottom": "md",
+        "elements": {
+          "title": {
+            "typography": "title",
+            "color": "text.primary",
+            "marginBottom": "xs"
+          },
+          "subtitle": {
+            "typography": "subtitle",
+            "color": "text.secondary",
+            "marginBottom": "md"
+          },
+          "description": {
+            "typography": "body",
+            "color": "text.secondary",
+            "lineClamp": "3"
+          }
+        }
+      },
+      
+      "actionBar": {
+        "backgroundColor": "transparent",
+        "padding": "md",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "alignItems": "center",
+        "elements": {
+          "favoriteButton": {
+            "icon": "heart",
+            "size": "24px",
+            "color": "accent.heart",
+            "states": {
+              "active": {
+                "fill": true,
+                "color": "accent.heart"
+              },
+              "inactive": {
+                "fill": false,
+                "color": "text.secondary"
+              }
+            }
+          },
+          "shareButton": {
+            "icon": "share",
+            "size": "24px",
+            "color": "text.secondary"
+          },
+          "bookmarkButton": {
+            "icon": "bookmark",
+            "size": "24px",
+            "color": "text.secondary",
+            "states": {
+              "active": {
+                "fill": true,
+                "color": "accent.brand"
+              }
+            }
+          }
+        }
+      },
+      
+      "sectionHeader": {
+        "marginTop": "xl",
+        "marginBottom": "lg",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "alignItems": "center",
+        "elements": {
+          "title": {
+            "typography": "title",
+            "color": "text.primary"
+          },
+          "viewAllButton": {
+            "icon": "menu",
+            "size": "20px",
+            "color": "text.secondary"
+          }
+        }
+      },
+      
+      "workoutCard": {
+        "backgroundColor": "primary.surface",
+        "borderRadius": "medium",
+        "overflow": "hidden",
+        "marginBottom": "md",
+        "layout": {
+          "type": "horizontal",
+          "imageWidth": "80px",
+          "imageHeight": "80px",
+          "padding": "md"
+        },
+        "elements": {
+          "thumbnail": {
+            "width": "80px",
+            "height": "80px",
+            "borderRadius": "small",
+            "backgroundColor": "primary.cardBackground"
+          },
+          "content": {
+            "flex": "1",
+            "marginLeft": "md",
+            "elements": {
+              "title": {
+                "typography": "body",
+                "color": "text.primary",
+                "fontWeight": "600",
+                "marginBottom": "xs"
+              },
+              "metadata": {
+                "flexDirection": "row",
+                "gap": "md",
+                "marginBottom": "xs",
+                "elements": {
+                  "difficulty": {
+                    "icon": "barbell",
+                    "text": "difficulty level",
+                    "typography": "caption",
+                    "color": "text.muted"
+                  },
+                  "duration": {
+                    "icon": "clock",
+                    "text": "duration",
+                    "typography": "caption",
+                    "color": "text.muted"
+                  }
+                }
+              },
+              "instructor": {
+                "icon": "user",
+                "text": "instructor name",
+                "typography": "caption",
+                "color": "text.muted"
+              }
+            }
+          },
+          "actionButton": {
+            "icon": "chevron-right",
+            "size": "20px",
+            "color": "accent.brand",
+            "backgroundColor": "transparent"
+          }
+        }
+      }
+    },
+    
+    "patterns": {
+      "screenStructure": {
+        "header": {
+          "type": "navigationHeader",
+          "position": "fixed",
+          "overlay": true
+        },
+        "hero": {
+          "type": "videoPlayer",
+          "fullWidth": true,
+          "aspectRatio": "16:9"
+        },
+        "content": {
+          "padding": "lg",
+          "backgroundColor": "primary.background",
+          "borderTopRadius": "large",
+          "marginTop": "-20px",
+          "position": "relative",
+          "zIndex": "10"
+        },
+        "sections": [
+          {
+            "type": "contentCard",
+            "order": 1
+          },
+          {
+            "type": "actionBar",
+            "order": 2
+          },
+          {
+            "type": "sectionHeader",
+            "order": 3
+          },
+          {
+            "type": "workoutList",
+            "order": 4,
+            "layout": "vertical",
+            "gap": "md"
+          }
+        ]
+      }
+    },
+    
+    "animations": {
+      "transitions": {
+        "standard": "cubic-bezier(0.4, 0.0, 0.2, 1)",
+        "duration": {
+          "short": "200ms",
+          "medium": "300ms",
+          "long": "500ms"
+        }
+      },
+      "interactions": {
+        "buttonPress": {
+          "scale": "0.96",
+          "duration": "short"
+        },
+        "cardHover": {
+          "transform": "translateY(-2px)",
+          "shadow": "0 8px 24px rgba(0, 0, 0, 0.4)",
+          "duration": "medium"
+        }
+      }
+    },
+    
+    "responsiveBreakpoints": {
+      "mobile": "0px",
+      "tablet": "768px",
+      "desktop": "1024px"
+    },
+    
+    "accessibility": {
+      "minimumTouchTarget": "44px",
+      "focusRing": {
+        "width": "2px",
+        "color": "accent.brand",
+        "style": "solid"
+      },
+      "contrastRatios": {
+        "text": "4.5:1",
+        "interactive": "3:1"
+      }
+    }
+  }
+}

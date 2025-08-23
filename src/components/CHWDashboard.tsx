@@ -5,7 +5,7 @@ import { PatientAssignments } from "@/components/PatientAssignments";
 
 export const CHWDashboard = () => {
   return (
-    <div className="min-h-screen bg-secondary/10">
+    <div className="min-h-screen bg-secondary/10 pb-28">
       <CHWHeader />
       <CHWNavigation />
       <div className="p-4 space-y-6">
