@@ -1,47 +1,59 @@
 import { Users, MapPin, FileText, AlertTriangle, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-const stats = [
-  {
-    id: 1,
-    title: "Assigned Patients",
-    value: "15",
-    change: "+8%",
-    icon: Users,
-    color: "bg-primary",
-    trend: "up"
-  },
-  {
-    id: 2,
-    title: "Visits This Week", 
-    value: "12",
-    status: "Complete",
-    icon: MapPin,
-    color: "bg-primary",
-    statusColor: "bg-primary/10 text-primary"
-  },
-  {
-    id: 3,
-    title: "Pending Reports",
-    value: "3", 
-    status: "Due",
-    icon: FileText,
-    color: "bg-orange-500",
-    statusColor: "bg-orange-100 text-orange-700"
-  },
-  {
-    id: 4,
-    title: "Device Issues",
-    value: "2",
-    status: "Priority", 
-    icon: AlertTriangle,
-    color: "bg-destructive",
-    statusColor: "bg-destructive/10 text-destructive"
-  }
-];
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CHWStats = () => {
+  const [assignedCount, setAssignedCount] = useState<number | null>(null);
+  const [questionCount, setQuestionCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let channel: any;
+    const load = async (uid?: string) => {
+      let userId = uid;
+      if (!userId) {
+        const { data: userRes } = await supabase.auth.getUser();
+        userId = userRes.user?.id;
+      }
+      if (!userId) return;
+
+      const { count: assignmentsCount } = await supabase
+        .from('chw_assignments')
+        .select('*', { count: 'exact', head: true })
+        .eq('chw_id', userId);
+      setAssignedCount(assignmentsCount ?? 0);
+
+      const { count: questionsCount } = await supabase
+        .from('community_questions')
+        .select('*', { count: 'exact', head: true });
+      setQuestionCount(questionsCount ?? 0);
+    };
+
+    const setup = async () => {
+      const { data: userRes } = await supabase.auth.getUser();
+      const uid = userRes.user?.id;
+      if (!uid) return;
+      await load(uid);
+      channel = supabase
+        .channel('chw_assignments_stats')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'chw_assignments', filter: `chw_id=eq.${uid}` }, () => {
+          load(uid);
+        })
+        .subscribe();
+    };
+
+    setup();
+    return () => { if (channel) supabase.removeChannel(channel); };
+  }, []);
+
+  const stats = [
+    { id: 1, title: 'Assigned Patients', value: assignedCount === null ? '—' : String(assignedCount), change: '+8%', icon: Users, color: 'bg-primary', statusColor: undefined },
+    { id: 2, title: 'Community Questions', value: questionCount === null ? '—' : String(questionCount), status: 'Open', icon: FileText, color: 'bg-orange-500', statusColor: 'bg-orange-100 text-orange-700' },
+    { id: 3, title: 'Visits This Week', value: '12', status: 'Complete', icon: MapPin, color: 'bg-primary', statusColor: 'bg-primary/10 text-primary' },
+    { id: 4, title: 'Device Issues', value: '2', status: 'Priority', icon: AlertTriangle, color: 'bg-destructive', statusColor: 'bg-destructive/10 text-destructive' },
+  ] as const;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat) => {
@@ -58,17 +70,16 @@ export const CHWStats = () => {
                   <div className="text-sm text-muted-foreground">{stat.title}</div>
                 </div>
               </div>
-              
               <div className="text-right space-y-1">
-                {stat.change && (
+                {(stat as any).change && (
                   <div className="flex items-center gap-1 text-primary text-sm font-medium">
                     <TrendingUp className="h-3 w-3" />
-                    {stat.change}
+                    {(stat as any).change}
                   </div>
                 )}
-                {stat.status && (
-                  <Badge className={stat.statusColor}>
-                    {stat.status}
+                {(stat as any).status && (
+                  <Badge className={(stat as any).statusColor}>
+                    {(stat as any).status}
                   </Badge>
                 )}
               </div>

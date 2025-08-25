@@ -7,11 +7,13 @@ import { useState, useEffect } from "react";
 
 export const ProfileHeader = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
     const fetchProfile = async () => {
       const user = (await supabase.auth.getUser()).data.user;
       if (user) {
+        setEmail(user.email || "");
         const { data } = await supabase
           .from('profiles')
           .select('*')
@@ -27,6 +29,8 @@ export const ProfileHeader = () => {
     await supabase.auth.signOut();
   };
 
+  const greetingName = userProfile?.username || email?.split('@')[0] || 'there';
+
   return (
     <div className="flex items-center justify-between p-4" style={{ background: 'var(--gradient-pale)' }}>
       <div className="flex items-center gap-3">
@@ -36,12 +40,12 @@ export const ProfileHeader = () => {
             alt="Profile picture" 
           />
           <AvatarFallback className="bg-primary/10 text-primary font-medium">
-            {userProfile?.user_id ? userProfile.user_id.charAt(0).toUpperCase() : "U"}
+            {greetingName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div>
-          <h1 className="text-lg font-semibold text-foreground">Emma's Journey</h1>
-          <p className="text-sm text-muted-foreground">Age 7 • Spastic CP • Level 2</p>
+          <h1 className="text-lg font-semibold text-foreground">Hey 👋, {greetingName}</h1>
+          <p className="text-sm text-muted-foreground">Welcome back</p>
         </div>
       </div>
       <div className="flex items-center gap-2">

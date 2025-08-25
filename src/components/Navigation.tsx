@@ -1,11 +1,10 @@
-import { Home, Play, Calendar, Users, MessageCircle } from "lucide-react";
+import { Home, Play, Calendar, Users } from "lucide-react";
 
 const tabs = [
   { id: "home", label: "Home", icon: Home, variant: "default" },
   { id: "devices", label: "Devices", icon: Play, variant: "primary" },
   { id: "schedule", label: "Schedule", icon: Calendar, variant: "default" },
   { id: "community", label: "Community", icon: Users, variant: "default" },
-  { id: "qa", label: "Q&A", icon: MessageCircle, variant: "default" },
 ];
 
 export const Navigation = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) => {

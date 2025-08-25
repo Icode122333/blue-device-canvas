@@ -1,38 +1,67 @@
-import { Users, MapPin, Clock, Calendar, Phone, MessageSquare, ArrowRight } from "lucide-react";
+import { Users, MapPin, Phone, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import profileAvatar from "@/assets/profile-avatar.png";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const patients = [
-  {
-    id: 1,
-    name: "Emma Johnson",
-    age: 7,
-    condition: "Spastic CP",
-    distance: "2.3 km",
-    lastVisit: "2 days ago",
-    nextVisit: "Today",
-    progress: 85,
-    priority: "high",
-    avatar: profileAvatar
-  },
-  {
-    id: 2,
-    name: "Michael Chen", 
-    age: 12,
-    condition: "Mild CP",
-    distance: "1.8 km",
-    lastVisit: "1 week ago", 
-    nextVisit: "Tomorrow",
-    progress: 72,
-    priority: "medium",
-    avatar: null
-  }
-];
+type AssignedPatient = {
+  user_id: string;
+  full_name: string;
+  mother_phone: string;
+};
 
 export const PatientAssignments = () => {
+  const [patients, setPatients] = useState<AssignedPatient[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let channel: any;
+
+    const load = async (uid?: string) => {
+      setLoading(true);
+      let userId = uid;
+      if (!userId) {
+        const { data: userRes } = await supabase.auth.getUser();
+        userId = userRes.user?.id;
+      }
+      if (!userId) { setLoading(false); return; }
+      // Get assigned patient IDs for this CHW
+      const { data: assignments, error: assignErr } = await supabase
+        .from('chw_assignments')
+        .select('patient_id')
+        .eq('chw_id', userId);
+      if (assignErr) { setLoading(false); return; }
+      const ids = (assignments ?? []).map(a => a.patient_id);
+      if (ids.length === 0) { setPatients([]); setLoading(false); return; }
+      // Fetch patient onboarding info (includes phone)
+      const { data: onboard, error: onboardErr } = await supabase
+        .from('patient_onboarding')
+        .select('user_id, full_name, mother_phone')
+        .in('user_id', ids);
+      if (onboardErr) { setLoading(false); return; }
+      setPatients((onboard ?? []) as AssignedPatient[]);
+      setLoading(false);
+    };
+
+    const setup = async () => {
+      const { data: userRes } = await supabase.auth.getUser();
+      const uid = userRes.user?.id;
+      if (!uid) { setLoading(false); return; }
+      await load(uid);
+      channel = supabase
+        .channel('chw_assignments_list')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'chw_assignments', filter: `chw_id=eq.${uid}` }, () => {
+          load(uid);
+        })
+        .subscribe();
+    };
+
+    setup();
+    return () => { if (channel) supabase.removeChannel(channel); };
+  }, []);
+
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -47,65 +76,54 @@ export const PatientAssignments = () => {
           Optimize Route
         </Button>
       </div>
-      
+
       <div className="space-y-4">
-        {patients.map((patient) => (
-          <Card key={patient.id} className="p-4 border border-border hover:shadow-md transition-all">
+        {loading && (
+          <div className="text-muted-foreground text-sm">Loading assignments...</div>
+        )}
+        {!loading && patients.length === 0 && (
+          <div className="text-muted-foreground text-sm">No assigned patients yet.</div>
+        )}
+        {!loading && patients.map((patient) => (
+          <Card key={patient.user_id} className="p-4 border border-border hover:shadow-md transition-all">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Avatar className="h-12 w-12">
-                  {patient.avatar ? (
-                    <AvatarImage src={patient.avatar} alt={`${patient.name}'s profile`} />
-                  ) : (
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {patient.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  )}
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                    {patient.full_name.split(' ').map(n => n[0]).join('').slice(0,2)}
+                  </AvatarFallback>
                 </Avatar>
-                
+
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-foreground">{patient.name}</h3>
-                    {patient.priority === 'high' && (
-                      <Badge className="bg-destructive/10 text-destructive text-xs">
-                        high priority
-                      </Badge>
-                    )}
+                    <h3 className="font-semibold text-foreground">{patient.full_name}</h3>
+                    <Badge className="bg-primary/10 text-primary text-xs">
+                      assigned
+                    </Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>{patient.age} years • {patient.condition}</span>
                     <div className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
-                      <span>{patient.distance}</span>
+                      <span>Community</span>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-6">
                 <div className="text-right space-y-1">
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>Last: {patient.lastVisit}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-sm text-primary font-medium">
-                    <Calendar className="h-3 w-3" />
-                    <span>Next: {patient.nextVisit}</span>
+                    <span>Phone:</span>
+                    <a href={`tel:${patient.mother_phone}`} className="text-primary font-medium">{patient.mother_phone}</a>
                   </div>
                 </div>
-                
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{patient.progress}%</div>
-                  <div className="text-xs text-muted-foreground">Progress</div>
-                </div>
-                
+
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="p-2">
-                    <Phone className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" className="p-2">
-                    <MessageSquare className="h-4 w-4" />
-                  </Button>
+                  <a href={`tel:${patient.mother_phone}`}>
+                    <Button size="sm" variant="outline" className="p-2">
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                  </a>
                 </div>
               </div>
             </div>

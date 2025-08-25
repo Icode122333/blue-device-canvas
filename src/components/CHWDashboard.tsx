@@ -2,6 +2,7 @@ import { CHWHeader } from "@/components/CHWHeader";
 import { CHWNavigation } from "@/components/CHWNavigation";
 import { CHWStats } from "@/components/CHWStats";
 import { PatientAssignments } from "@/components/PatientAssignments";
+import { CHWReport } from "@/components/CHWReport";
 
 export const CHWDashboard = () => {
   return (
@@ -11,6 +12,7 @@ export const CHWDashboard = () => {
       <div className="p-4 space-y-6">
         <CHWStats />
         <PatientAssignments />
+        <CHWReport />
       </div>
     </div>
   );

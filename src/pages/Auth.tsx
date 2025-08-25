@@ -17,6 +17,7 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState<'chw' | 'patient' | null>(null);
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -39,6 +40,10 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
           setError("Please select your role before signing up");
           return;
         }
+        if (!username.trim()) {
+          setError("Please choose a username");
+          return;
+        }
         
         const redirectUrl = `${window.location.origin}/`;
         const { error } = await supabase.auth.signUp({
@@ -47,7 +52,8 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
           options: {
             emailRedirectTo: redirectUrl,
             data: {
-              role: selectedRole
+              role: selectedRole,
+              username
             }
           }
         });
@@ -101,6 +107,17 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
                   <Heart className="h-6 w-6" />
                   <span className="text-xs">Patient</span>
                 </Button>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Choose a username"
+                  required
+                />
               </div>
             </div>
           )}

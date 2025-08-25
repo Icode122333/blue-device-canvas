@@ -3,22 +3,51 @@ import { Bell, Settings, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 export const CHWHeader = () => {
+  const [username, setUsername] = useState<string>("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>("");
+
+  useEffect(() => {
+    const load = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const user = userData.user;
+      if (!user) return;
+      setEmail(user.email || "");
+      const { data } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('user_id', user.id)
+        .single();
+      if (data) {
+        setUsername(data.username || "");
+        setAvatarUrl(data.avatar_url);
+      }
+    };
+    load();
+  }, []);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
+
+  const greetingName = username || email.split('@')[0] || 'there';
 
   return (
     <div className="bg-card border-b border-border p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12 bg-primary">
-            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">MS</AvatarFallback>
+            <AvatarImage src={avatarUrl || undefined} />
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+              {greetingName.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-lg font-semibold text-foreground">Maria Santos</h1>
-            <p className="text-sm text-muted-foreground">Community Health Worker • Field Specialist</p>
+            <h1 className="text-lg font-semibold text-foreground">Hey 👋, {greetingName}</h1>
+            <p className="text-sm text-muted-foreground">Community Health Worker</p>
           </div>
         </div>
         
