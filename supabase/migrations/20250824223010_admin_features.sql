@@ -253,6 +253,20 @@ DO $$ BEGIN
   );
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
+-- Physios can view unassigned community questions for triage
+DO $$ BEGIN
+  CREATE POLICY "Physio can view unassigned questions"
+  ON public.community_questions
+  FOR SELECT TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.user_id = auth.uid() AND p.role = 'physio'
+    )
+    AND assigned_physio_id IS NULL
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
 -- Replies table
 CREATE TABLE IF NOT EXISTS public.community_question_replies (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

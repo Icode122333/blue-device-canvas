@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Search, ChevronRight, Clock, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export const ExerciseList = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [assignments, setAssignments] = useState<any[]>([]);
   const [videosById, setVideosById] = useState<Record<string, any>>({});
+  const [openVideoId, setOpenVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -134,21 +137,52 @@ export const ExerciseList = () => {
                   </div>
 
                   {/* Start Button */}
-                  <a
-                    href={v.video_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => setOpenVideoId(v.id)}
                     className="inline-flex mt-3 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors items-center gap-2"
                   >
                     Start
                     <ChevronRight className="h-4 w-4" />
-                  </a>
+                  </button>
                 </div>
               </div>
             );
           })
         )}
       </div>
+
+      {/* Video Player Dialog */}
+      <Dialog open={!!openVideoId} onOpenChange={(open) => !open && setOpenVideoId(null)}>
+        <DialogContent className="max-w-2xl">
+          {openVideoId && (() => {
+            const v = videosById[assignments.find((a) => a.video_id === openVideoId)?.video_id ?? ""];
+            if (!v) return null;
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle>{v.title}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3">
+                  <AspectRatio ratio={16/9}>
+                    <video
+                      src={v.video_url}
+                      poster={v.thumbnail_url || undefined}
+                      controls
+                      className="h-full w-full rounded-md bg-black"
+                    />
+                  </AspectRatio>
+                  {v.description && (
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{v.description}</p>
+                  )}
+                  {assignments.find((a) => a.video_id === openVideoId)?.notes && (
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{assignments.find((a) => a.video_id === openVideoId)?.notes}</p>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

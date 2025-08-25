@@ -18,6 +18,7 @@ interface CommunityQuestion {
 export default function QuestionsTab() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<CommunityQuestion[]>([]);
+  const [unassigned, setUnassigned] = useState<CommunityQuestion[]>([]);
   const { toast } = useToast();
   const [replyForId, setReplyForId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
@@ -28,6 +29,7 @@ export default function QuestionsTab() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setItems([]);
+        setUnassigned([]);
         setLoading(false);
         return;
       }
@@ -42,10 +44,42 @@ export default function QuestionsTab() {
       } else {
         setItems((data as CommunityQuestion[]) ?? []);
       }
+
+      // Load unassigned questions (requires policy allowing physio to view where assigned_physio_id IS NULL)
+      const { data: ua, error: uaErr } = await supabase
+        .from("community_questions")
+        .select("id,user_id,content,created_at,assigned_physio_id")
+        .is("assigned_physio_id", null)
+        .order("created_at", { ascending: false });
+      if (uaErr) {
+        // Don't block; just inform physio they may need to run the migration
+        console.warn("Failed to load unassigned questions", uaErr);
+        setUnassigned([]);
+      } else {
+        setUnassigned((ua as CommunityQuestion[]) ?? []);
+      }
       setLoading(false);
     };
     load();
   }, [toast]);
+
+  const assignToMe = async (qid: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { toast({ title: "Not signed in", variant: "destructive" }); return; }
+    const { error } = await supabase
+      .from("community_questions")
+      .update({ assigned_physio_id: user.id } as any)
+      .eq("id", qid);
+    if (error) {
+      toast({ title: "Assignment failed", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Assigned to you" });
+      // Move item from unassigned to assigned list in UI
+      const picked = unassigned.find(q => q.id === qid);
+      setUnassigned(prev => prev.filter(q => q.id !== qid));
+      if (picked) setItems(prev => [{ ...picked, assigned_physio_id: user.id }, ...prev]);
+    }
+  };
 
   return (
     <Card>
@@ -53,6 +87,37 @@ export default function QuestionsTab() {
         <CardTitle>Assigned Questions</CardTitle>
       </CardHeader>
       <CardContent>
+        {/* Unassigned section (triage) */}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold mb-2">Unassigned</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Asked At</TableHead>
+                <TableHead>From (user_id)</TableHead>
+                <TableHead>Question</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow><TableCell colSpan={4}>Loading...</TableCell></TableRow>
+              ) : unassigned.length === 0 ? (
+                <TableRow><TableCell colSpan={4}>No unassigned questions</TableCell></TableRow>
+              ) : unassigned.map(q => (
+                <TableRow key={q.id}>
+                  <TableCell>{new Date(q.created_at).toLocaleString()}</TableCell>
+                  <TableCell><code className="text-xs">{q.user_id}</code></TableCell>
+                  <TableCell className="max-w-[520px] whitespace-pre-wrap">{q.content}</TableCell>
+                  <TableCell className="text-right">
+                    <Button size="sm" onClick={() => assignToMe(q.id)}>Assign to me</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
         <Table>
           <TableHeader>
             <TableRow>

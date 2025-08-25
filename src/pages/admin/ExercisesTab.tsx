@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface VideoRow {
   id: string;
@@ -54,6 +55,7 @@ const ExercisesTab = () => {
   const [dueDate, setDueDate] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [assigning, setAssigning] = useState(false);
+  const [previewFor, setPreviewFor] = useState<string | null>(null);
 
   const canUpload = useMemo(() => title.trim() && videoFile, [title, videoFile]);
 
@@ -279,9 +281,29 @@ const ExercisesTab = () => {
                     <TableCell>{new Date(v.created_at).toLocaleString()}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <a href={v.video_url} target="_blank" rel="noreferrer">
-                          <Button variant="outline" size="sm">Open</Button>
-                        </a>
+                        <Dialog open={previewFor === v.id} onOpenChange={(open) => setPreviewFor(open ? v.id : null)}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" onClick={() => setPreviewFor(v.id)}>Preview</Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>{v.title}</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-3">
+                              <AspectRatio ratio={16/9}>
+                                <video
+                                  src={v.video_url}
+                                  poster={v.thumbnail_url || undefined}
+                                  controls
+                                  className="h-full w-full rounded-md bg-black"
+                                />
+                              </AspectRatio>
+                              {v.description && (
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{v.description}</p>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                         <Dialog open={assignOpenFor === v.id} onOpenChange={(open) => setAssignOpenFor(open ? v.id : null)}>
                           <DialogTrigger asChild>
                             <Button size="sm" variant="default" onClick={() => openAssign(v.id)}>Assign</Button>
