@@ -12,6 +12,8 @@ import ExercisesTab from "@/pages/admin/ExercisesTab";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 
 // NOTE: Current roles are 'patient' and 'chw'. If you add 'physio' to profiles.role,
 // update the allowedRoles array below to ["physio"]. For now we treat 'chw' as admin-capable.
@@ -49,6 +51,10 @@ const Admin = () => {
   const [detailPatientId, setDetailPatientId] = useState<string | null>(null);
   const [detailOnboarding, setDetailOnboarding] = useState<any>(null);
   const [detailAssessments, setDetailAssessments] = useState<any[]>([]);
+  // CHW reports review state
+  const [reports, setReports] = useState<any[]>([]);
+  const [loadingReports, setLoadingReports] = useState(false);
+  const [commentById, setCommentById] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const init = async () => {
@@ -85,6 +91,8 @@ const Admin = () => {
       ]);
       setChws((chwRows as SimpleUser[]) ?? []);
       setPatients((patientRows as SimpleUser[]) ?? []);
+
+      await loadReports();
 
       setLoading(false);
     };
@@ -146,6 +154,38 @@ const Admin = () => {
       .order("created_at", { ascending: false });
     setDetailAssessments((assessments as any[]) ?? []);
     setPatientDetailOpen(true);
+  };
+
+  const loadReports = async () => {
+    setLoadingReports(true);
+    const { data, error } = await supabase
+      .from('chw_reports')
+      .select('id, chw_id, title, content, attachment_url, status, admin_comment, created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      toast({ title: 'Failed to load reports', description: error.message, variant: 'destructive' });
+      setReports([]);
+    } else {
+      setReports(data || []);
+    }
+    setLoadingReports(false);
+  };
+
+  const reviewReport = async (
+    id: string,
+    newStatus?: 'reviewed' | 'submitted',
+    comment?: string
+  ) => {
+    const update: any = {};
+    if (newStatus) update.status = newStatus;
+    if (typeof comment !== 'undefined') update.admin_comment = comment;
+    const { error } = await supabase.from('chw_reports').update(update).eq('id', id);
+    if (error) {
+      toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Report updated' });
+      await loadReports();
+    }
   };
 
   if (loading) {
@@ -389,7 +429,71 @@ const Admin = () => {
                 <CardTitle>Reports</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">Review submitted CHW reports and attachments.</p>
+                {loadingReports ? (
+                  <div className="text-sm text-muted-foreground">Loading...</div>
+                ) : reports.length === 0 ? (
+                  <div className="text-sm text-muted-foreground">No reports submitted.</div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>CHW</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Attachment</TableHead>
+                        <TableHead>Admin Comment</TableHead>
+                        <TableHead className="w-[200px]"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {reports.map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="font-medium">{r.title}</TableCell>
+                          <TableCell><code className="text-xs">{r.chw_id}</code></TableCell>
+                          <TableCell>{new Date(r.created_at).toLocaleString()}</TableCell>
+                          <TableCell>
+                            <Badge variant={r.status === 'reviewed' ? 'default' : 'outline'}>
+                              {r.status === 'reviewed' ? 'Reviewed' : 'Pending'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {r.attachment_url ? (
+                              <a href={r.attachment_url} target="_blank" rel="noreferrer" className="underline text-sm">View</a>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">—</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Textarea
+                              rows={2}
+                              placeholder="Write admin comment..."
+                              value={commentById[r.id] ?? r.admin_comment ?? ''}
+                              onChange={(e) => setCommentById((s) => ({ ...s, [r.id]: e.target.value }))}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex gap-2 justify-end">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => reviewReport(r.id, undefined, commentById[r.id] ?? r.admin_comment ?? '')}
+                              >
+                                Save Comment
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => reviewReport(r.id, 'reviewed', commentById[r.id] ?? r.admin_comment ?? '')}
+                              >
+                                Approve
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

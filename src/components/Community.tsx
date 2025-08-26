@@ -222,10 +222,17 @@ export const Community = () => {
                               }
                               const { data: { user } } = await supabase.auth.getUser();
                               if (!user) { toast({ title: 'Not signed in', variant: 'destructive' }); return; }
+                              // Determine role from profiles to mark reply as patient or CHW
+                              const { data: prof } = await supabase
+                                .from('profiles')
+                                .select('role')
+                                .eq('user_id', user.id)
+                                .single();
+                              const responderRole = prof?.role === 'chw' ? 'chw' : 'patient';
                               const { error } = await supabase.from('community_question_replies').insert({
                                 question_id: q.id,
                                 responder_id: user.id,
-                                responder_role: 'patient',
+                                responder_role: responderRole,
                                 content: replyText.trim(),
                               } as any);
                               if (error) {
