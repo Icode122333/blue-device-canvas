@@ -119,12 +119,12 @@ export const CHWHeader = () => {
   const greetingName = username || email.split('@')[0] || 'there';
 
   return (
-    <div className="bg-card border-b border-border p-4">
+    <div className="p-4 clay-card clay-fade-in">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 bg-primary">
+          <Avatar className="h-12 w-12 border-2 border-primary/20">
             <AvatarImage src={avatarUrl || undefined} />
-            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
               {greetingName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -137,8 +137,8 @@ export const CHWHeader = () => {
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="relative p-2 rounded-full hover:bg-secondary transition-colors">
-                <Bell className="h-5 w-5 text-muted-foreground" />
+              <button className="relative p-2 rounded-full clay-button hover:scale-[1.02] active:scale-[0.98]">
+                <Bell className="h-5 w-5 text-muted-foreground drop-shadow-sm" strokeWidth={1.75} />
                 {notifCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
                     {notifCount}
@@ -146,7 +146,7 @@ export const CHWHeader = () => {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
+            <DropdownMenuContent align="end" className="w-80 clay-card">
               <DropdownMenuLabel>Notifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {notifs.length === 0 ? (
@@ -170,9 +170,9 @@ export const CHWHeader = () => {
             variant="ghost"
             size="sm"
             onClick={handleSignOut}
-            className="p-2 rounded-full hover:bg-secondary transition-colors"
+            className="p-2 rounded-full clay-button"
           >
-            <LogOut className="h-5 w-5 text-muted-foreground" />
+            <LogOut className="h-5 w-5 text-muted-foreground drop-shadow-sm" strokeWidth={1.75} />
           </Button>
         </div>
       </div>

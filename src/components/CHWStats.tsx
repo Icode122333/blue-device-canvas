@@ -50,20 +50,18 @@ export const CHWStats = () => {
   const stats = [
     { id: 1, title: 'Assigned Patients', value: assignedCount === null ? '—' : String(assignedCount), change: '+8%', icon: Users, color: 'bg-primary', statusColor: undefined },
     { id: 2, title: 'Community Questions', value: questionCount === null ? '—' : String(questionCount), status: 'Open', icon: FileText, color: 'bg-orange-500', statusColor: 'bg-orange-100 text-orange-700' },
-    { id: 3, title: 'Visits This Week', value: '12', status: 'Complete', icon: MapPin, color: 'bg-primary', statusColor: 'bg-primary/10 text-primary' },
-    { id: 4, title: 'Device Issues', value: '2', status: 'Priority', icon: AlertTriangle, color: 'bg-destructive', statusColor: 'bg-destructive/10 text-destructive' },
   ] as const;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       {stats.map((stat) => {
         const IconComponent = stat.icon;
         return (
-          <Card key={stat.id} className="p-4 hover:shadow-md transition-shadow">
+          <Card key={stat.id} className="clay-card p-4 transition-all hover:shadow-lg hover:scale-[1.01] clay-fade-in">
             <div className="flex items-start justify-between">
               <div className="space-y-2">
-                <div className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center`}>
-                  <IconComponent className="h-6 w-6 text-white" />
+                <div className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center shadow-inner ring-1 ring-white/40 shadow-black/10`}>
+                  <IconComponent className="h-6 w-6 text-white drop-shadow" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">{stat.value}</div>

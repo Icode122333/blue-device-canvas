@@ -206,7 +206,7 @@ const Admin = () => {
   if (!authorized) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg">
+        <Card className="w-full max-w-lg clay-card">
           <CardHeader>
             <CardTitle>Access denied</CardTitle>
           </CardHeader>
@@ -218,7 +218,7 @@ const Admin = () => {
               Current role: <span className="font-medium">{profile?.role ?? "unknown"}</span>
             </p>
             <a href="/" className="inline-block mt-4">
-              <Button variant="outline">Go back home</Button>
+              <Button variant="outline" className="clay-button">Go back home</Button>
             </a>
           </CardContent>
         </Card>
@@ -229,14 +229,14 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-secondary/20">
       <div className="mx-auto max-w-6xl p-4">
-        <div className="mb-6">
+        <div className="mb-6 p-4 clay-card">
           <h1 className="text-2xl font-semibold">Physio Admin Panel</h1>
           <p className="text-sm text-muted-foreground">Manage appointments, CHW assignments, and reports.</p>
         </div>
 
         {/* Overview widgets */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <Card>
+          <Card className="clay-card">
             <CardHeader>
               <CardTitle>Total Patients</CardTitle>
             </CardHeader>
@@ -244,7 +244,7 @@ const Admin = () => {
               <div className="text-3xl font-bold">{patientCount ?? "—"}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="clay-card">
             <CardHeader>
               <CardTitle>Total CHWs</CardTitle>
             </CardHeader>
@@ -255,22 +255,24 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="appointments">
-          <TabsList>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
-            <TabsTrigger value="assignments">CHW Assignments</TabsTrigger>
-            <TabsTrigger value="patients">Patients</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-            <TabsTrigger value="assessment">Assessment</TabsTrigger>
-            <TabsTrigger value="exercises">Exercises</TabsTrigger>
-            <TabsTrigger value="questions">Questions</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto -mx-1 px-1">
+            <TabsList className="clay-card flex-nowrap">
+              <TabsTrigger value="appointments">Appointments</TabsTrigger>
+              <TabsTrigger value="assignments">CHW Assignments</TabsTrigger>
+              <TabsTrigger value="patients">Patients</TabsTrigger>
+              <TabsTrigger value="reports">Reports</TabsTrigger>
+              <TabsTrigger value="assessment">Assessment</TabsTrigger>
+              <TabsTrigger value="exercises">Exercises</TabsTrigger>
+              <TabsTrigger value="questions">Questions</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="appointments" className="mt-4">
             <AppointmentsTab />
           </TabsContent>
 
           <TabsContent value="assignments" className="mt-4">
-            <Card>
+            <Card className="clay-card">
               <CardHeader>
                 <CardTitle>CHW Assignments</CardTitle>
               </CardHeader>
@@ -307,7 +309,7 @@ const Admin = () => {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Button onClick={assignPatient} disabled={!selectedChw || !selectedPatient}>Assign</Button>
+                      <Button onClick={assignPatient} disabled={!selectedChw || !selectedPatient} className="clay-button">Assign</Button>
                     </div>
                   </div>
                 </div>
@@ -319,26 +321,28 @@ const Admin = () => {
                   ) : assignedPatients.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No patients assigned.</p>
                   ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Username</TableHead>
-                          <TableHead>User ID</TableHead>
-                          <TableHead className="w-[120px]"></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {assignedPatients.map(p => (
-                          <TableRow key={p.user_id}>
-                            <TableCell>{p.username || "—"}</TableCell>
-                            <TableCell><code className="text-xs">{p.user_id}</code></TableCell>
-                            <TableCell className="text-right">
-                              <Button variant="outline" size="sm" onClick={() => unassignPatient(p.user_id)}>Unassign</Button>
-                            </TableCell>
+                    <div className="overflow-x-auto">
+                      <Table className="min-w-[640px]">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Username</TableHead>
+                            <TableHead>User ID</TableHead>
+                            <TableHead className="w-[120px]"></TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {assignedPatients.map(p => (
+                            <TableRow key={p.user_id}>
+                              <TableCell>{p.username || "—"}</TableCell>
+                              <TableCell><code className="text-xs">{p.user_id}</code></TableCell>
+                              <TableCell className="text-right">
+                                <Button variant="outline" size="sm" onClick={() => unassignPatient(p.user_id)} className="clay-button">Unassign</Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   )}
                 </div>
               </CardContent>
@@ -346,85 +350,87 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="patients" className="mt-4">
-            <Card>
+            <Card className="clay-card">
               <CardHeader>
                 <CardTitle>Patients</CardTitle>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Username</TableHead>
-                      <TableHead>User ID</TableHead>
-                      <TableHead className="w-[120px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {patients.map(p => (
-                      <TableRow key={p.user_id}>
-                        <TableCell>{p.username || "—"}</TableCell>
-                        <TableCell><code className="text-xs">{p.user_id}</code></TableCell>
-                        <TableCell className="text-right">
-                          <Dialog open={patientDetailOpen && detailPatientId === p.user_id} onOpenChange={(open) => { if (!open) { setPatientDetailOpen(false); setDetailPatientId(null); } }}>
-                            <DialogTrigger asChild>
-                              <Button size="sm" onClick={() => openPatientDetail(p.user_id)}>View</Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-2xl">
-                              <DialogHeader>
-                                <DialogTitle>Patient Details</DialogTitle>
-                              </DialogHeader>
-                              <div className="space-y-4">
-                                <div>
-                                  <div className="text-sm text-muted-foreground">Onboarding</div>
-                                  {!detailOnboarding ? (
-                                    <div className="text-sm">No onboarding data.</div>
-                                  ) : (
-                                    <div className="text-sm grid grid-cols-2 gap-2">
-                                      <div><span className="text-muted-foreground">Full Name:</span> {detailOnboarding.full_name}</div>
-                                      <div><span className="text-muted-foreground">Mother Phone:</span> {detailOnboarding.mother_phone}</div>
-                                      <div><span className="text-muted-foreground">Age:</span> {detailOnboarding.age}</div>
-                                      <div><span className="text-muted-foreground">Problem Noticed:</span> {new Date(detailOnboarding.problem_first_noticed).toLocaleDateString()}</div>
-                                    </div>
-                                  )}
-                                </div>
-                                <div>
-                                  <div className="text-sm font-medium mb-1">Assessments</div>
-                                  {detailAssessments.length === 0 ? (
-                                    <div className="text-sm text-muted-foreground">No assessments yet.</div>
-                                  ) : (
-                                    <div className="space-y-2">
-                                      {detailAssessments.map(a => (
-                                        <div key={a.id} className="border rounded p-2 text-sm">
-                                          <div className="flex items-center justify-between">
-                                            <div>
-                                              <span className="text-muted-foreground mr-2">Date:</span>
-                                              {new Date(a.created_at).toLocaleString()}
-                                            </div>
-                                            <div className="text-muted-foreground text-xs">
-                                              physio_id: <code>{a.physio_id}</code>
-                                            </div>
-                                          </div>
-                                          {a.full_name && <div className="mt-1">Name: {a.full_name}</div>}
-                                          {a.rehab_recommendations && <div className="mt-1">Plan: {a.rehab_recommendations}</div>}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-[640px]">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Username</TableHead>
+                        <TableHead>User ID</TableHead>
+                        <TableHead className="w-[120px]"></TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {patients.map(p => (
+                        <TableRow key={p.user_id}>
+                          <TableCell>{p.username || "—"}</TableCell>
+                          <TableCell><code className="text-xs">{p.user_id}</code></TableCell>
+                          <TableCell className="text-right">
+                            <Dialog open={patientDetailOpen && detailPatientId === p.user_id} onOpenChange={(open) => { if (!open) { setPatientDetailOpen(false); setDetailPatientId(null); } }}>
+                              <DialogTrigger asChild>
+                                <Button size="sm" onClick={() => openPatientDetail(p.user_id)} className="clay-button">View</Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl clay-card">
+                                <DialogHeader>
+                                  <DialogTitle>Patient Details</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <div className="text-sm text-muted-foreground">Onboarding</div>
+                                    {!detailOnboarding ? (
+                                      <div className="text-sm">No onboarding data.</div>
+                                    ) : (
+                                      <div className="text-sm grid grid-cols-2 gap-2">
+                                        <div><span className="text-muted-foreground">Full Name:</span> {detailOnboarding.full_name}</div>
+                                        <div><span className="text-muted-foreground">Mother Phone:</span> {detailOnboarding.mother_phone}</div>
+                                        <div><span className="text-muted-foreground">Age:</span> {detailOnboarding.age}</div>
+                                        <div><span className="text-muted-foreground">Problem Noticed:</span> {new Date(detailOnboarding.problem_first_noticed).toLocaleDateString()}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div>
+                                    <div className="text-sm font-medium mb-1">Assessments</div>
+                                    {detailAssessments.length === 0 ? (
+                                      <div className="text-sm text-muted-foreground">No assessments yet.</div>
+                                    ) : (
+                                      <div className="space-y-2">
+                                        {detailAssessments.map(a => (
+                                          <div key={a.id} className="border rounded p-2 text-sm">
+                                            <div className="flex items-center justify-between">
+                                              <div>
+                                                <span className="text-muted-foreground mr-2">Date:</span>
+                                                {new Date(a.created_at).toLocaleString()}
+                                              </div>
+                                              <div className="text-muted-foreground text-xs">
+                                                physio_id: <code>{a.physio_id}</code>
+                                              </div>
+                                            </div>
+                                            {a.full_name && <div className="mt-1">Name: {a.full_name}</div>}
+                                            {a.rehab_recommendations && <div className="mt-1">Plan: {a.rehab_recommendations}</div>}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="reports" className="mt-4">
-            <Card>
+            <Card className="clay-card">
               <CardHeader>
                 <CardTitle>Reports</CardTitle>
               </CardHeader>
@@ -434,65 +440,69 @@ const Admin = () => {
                 ) : reports.length === 0 ? (
                   <div className="text-sm text-muted-foreground">No reports submitted.</div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>CHW</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Attachment</TableHead>
-                        <TableHead>Admin Comment</TableHead>
-                        <TableHead className="w-[200px]"></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {reports.map((r) => (
-                        <TableRow key={r.id}>
-                          <TableCell className="font-medium">{r.title}</TableCell>
-                          <TableCell><code className="text-xs">{r.chw_id}</code></TableCell>
-                          <TableCell>{new Date(r.created_at).toLocaleString()}</TableCell>
-                          <TableCell>
-                            <Badge variant={r.status === 'reviewed' ? 'default' : 'outline'}>
-                              {r.status === 'reviewed' ? 'Reviewed' : 'Pending'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {r.attachment_url ? (
-                              <a href={r.attachment_url} target="_blank" rel="noreferrer" className="underline text-sm">View</a>
-                            ) : (
-                              <span className="text-muted-foreground text-sm">—</span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <Textarea
-                              rows={2}
-                              placeholder="Write admin comment..."
-                              value={commentById[r.id] ?? r.admin_comment ?? ''}
-                              onChange={(e) => setCommentById((s) => ({ ...s, [r.id]: e.target.value }))}
-                            />
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex gap-2 justify-end">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => reviewReport(r.id, undefined, commentById[r.id] ?? r.admin_comment ?? '')}
-                              >
-                                Save Comment
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={() => reviewReport(r.id, 'reviewed', commentById[r.id] ?? r.admin_comment ?? '')}
-                              >
-                                Approve
-                              </Button>
-                            </div>
-                          </TableCell>
+                  <div className="overflow-x-auto">
+                    <Table className="min-w-[880px]">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>CHW</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Attachment</TableHead>
+                          <TableHead>Admin Comment</TableHead>
+                          <TableHead className="w-[200px]"></TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {reports.map((r) => (
+                          <TableRow key={r.id}>
+                            <TableCell className="font-medium">{r.title}</TableCell>
+                            <TableCell><code className="text-xs">{r.chw_id}</code></TableCell>
+                            <TableCell>{new Date(r.created_at).toLocaleString()}</TableCell>
+                            <TableCell>
+                              <Badge variant={r.status === 'reviewed' ? 'default' : 'outline'}>
+                                {r.status === 'reviewed' ? 'Reviewed' : 'Pending'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {r.attachment_url ? (
+                                <a href={r.attachment_url} target="_blank" rel="noreferrer" className="underline text-sm">View</a>
+                              ) : (
+                                <span className="text-muted-foreground text-sm">—</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Textarea
+                                rows={2}
+                                placeholder="Write admin comment..."
+                                value={commentById[r.id] ?? r.admin_comment ?? ''}
+                                onChange={(e) => setCommentById((s) => ({ ...s, [r.id]: e.target.value }))}
+                              />
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex gap-2 justify-end">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => reviewReport(r.id, undefined, commentById[r.id] ?? r.admin_comment ?? '')}
+                                  className="clay-button"
+                                >
+                                  Save Comment
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => reviewReport(r.id, 'reviewed', commentById[r.id] ?? r.admin_comment ?? '')}
+                                  className="clay-button"
+                                >
+                                  Approve
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 )}
               </CardContent>
             </Card>

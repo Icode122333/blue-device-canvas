@@ -63,15 +63,15 @@ export const PatientAssignments = () => {
   }, []);
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <Card className="clay-card p-6 clay-fade-in">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-inner ring-1 ring-white/40 shadow-black/10">
             <Users className="h-5 w-5 text-primary-foreground" />
           </div>
           <h2 className="text-xl font-semibold text-foreground">Patient Assignments</h2>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+        <Button className="clay-button bg-primary hover:bg-primary/90 text-primary-foreground transition-transform hover:scale-[1.02]">
           <ArrowRight className="h-4 w-4 mr-2" />
           Optimize Route
         </Button>
@@ -85,8 +85,8 @@ export const PatientAssignments = () => {
           <div className="text-muted-foreground text-sm">No assigned patients yet.</div>
         )}
         {!loading && patients.map((patient) => (
-          <Card key={patient.user_id} className="p-4 border border-border hover:shadow-md transition-all">
-            <div className="flex items-center justify-between">
+          <Card key={patient.user_id} className="clay-card p-4 border border-border hover:shadow-lg transition-transform hover:scale-[1.01]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <Avatar className="h-12 w-12">
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold">
@@ -110,7 +110,7 @@ export const PatientAssignments = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-6">
+              <div className="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-4">
                 <div className="text-right space-y-1">
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <span>Phone:</span>
@@ -120,7 +120,7 @@ export const PatientAssignments = () => {
 
                 <div className="flex gap-2">
                   <a href={`tel:${patient.mother_phone}`}>
-                    <Button size="sm" variant="outline" className="p-2">
+                    <Button size="sm" variant="outline" className="clay-button p-2">
                       <Phone className="h-4 w-4" />
                     </Button>
                   </a>

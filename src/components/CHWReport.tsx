@@ -93,9 +93,9 @@ export const CHWReport = () => {
   };
 
   return (
-    <Card className="p-6">
+    <Card className="clay-card p-6 clay-fade-in">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-inner ring-1 ring-white/40 shadow-black/10">
           <FileText className="h-5 w-5 text-primary-foreground" />
         </div>
         <h2 className="text-xl font-semibold text-foreground">Report</h2>
@@ -121,7 +121,7 @@ export const CHWReport = () => {
           </div>
         </div>
         <div className="flex justify-end">
-          <Button type="submit" disabled={submitting} className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button type="submit" disabled={submitting} className="clay-button bg-primary text-primary-foreground hover:bg-primary/90 transition-transform hover:scale-[1.02]">
             {submitting ? 'Submitting...' : 'Submit Report'}
           </Button>
         </div>
@@ -135,7 +135,7 @@ export const CHWReport = () => {
         ) : !latest ? (
           <div className="text-sm text-muted-foreground">No reports submitted yet.</div>
         ) : (
-          <Card className="p-4">
+          <Card className="clay-card p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-sm font-medium">{latest.title}</div>

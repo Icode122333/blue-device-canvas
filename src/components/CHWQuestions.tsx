@@ -82,7 +82,7 @@ export const CHWQuestions = () => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 clay-fade-in">
       <h3 className="font-semibold text-foreground flex items-center gap-2">
         <MessageCircle className="h-4 w-4" />
         Community Questions
@@ -95,7 +95,7 @@ export const CHWQuestions = () => {
         questions.map((q) => {
           const replies = repliesByQ[q.id] || [];
           return (
-            <Card key={q.id} className="border-border/50">
+            <Card key={q.id} className="clay-card border-border/50 transition-transform hover:scale-[1.005]">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-1 space-y-2">
@@ -137,9 +137,9 @@ export const CHWQuestions = () => {
                     </Badge>
                     <Dialog open={replyFor === q.id} onOpenChange={(open) => !open && setReplyFor(null)}>
                       <DialogTrigger asChild>
-                        <Button size="sm" variant="outline" onClick={() => { setReplyFor(q.id); setReplyText(''); }}>Reply</Button>
+                        <Button size="sm" variant="outline" className="clay-button" onClick={() => { setReplyFor(q.id); setReplyText(''); }}>Reply</Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="clay-card">
                         <DialogHeader>
                           <DialogTitle>Reply to question</DialogTitle>
                         </DialogHeader>
