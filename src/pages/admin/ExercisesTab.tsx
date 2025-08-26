@@ -277,7 +277,7 @@ const ExercisesTab = () => {
                   <TableRow key={v.id}>
                     <TableCell className="font-medium">{v.title}</TableCell>
                     <TableCell className="capitalize">{v.difficulty ?? '—'}</TableCell>
-                    <TableCell>{typeof v.duration_seconds === 'number' ? `${Math.round(v.duration_seconds / 60)} min` : '—'}</TableCell>
+                    <TableCell>{typeof v.duration_seconds === 'number' ? `${v.duration_seconds} sec` : '—'}</TableCell>
                     <TableCell>{new Date(v.created_at).toLocaleString()}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">

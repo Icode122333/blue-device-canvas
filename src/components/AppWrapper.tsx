@@ -12,7 +12,10 @@ import { ExerciseList } from "@/components/ExerciseList";
 import { AppointmentList } from "@/components/AppointmentList";
 import { Community } from "@/components/Community";
 import { Schedule } from "@/components/Schedule";
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { BookOpen, Calculator } from "lucide-react";
 
 export const AppWrapper = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -151,6 +154,84 @@ export const AppWrapper = () => {
         <>
           <InfoCard />
           <AppointmentList />
+
+          <div className="mt-4 space-y-4 px-4">
+            <Card className="clay-card clay-fade-in hover:scale-[1.01] transition">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5 text-primary" />
+                    App Guide
+                  </CardTitle>
+                  <CardDescription>Learn how to use the app step by step</CardDescription>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="inline-flex items-center px-3 py-2 rounded-lg bg-primary text-white shadow hover:shadow-lg transition">
+                      Open Guide
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>How to use the app</DialogTitle>
+                      <DialogDescription>Follow these steps to get started</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 text-sm text-muted-foreground">
+                      <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-lg p-3">
+                        <p className="font-medium text-emerald-900">Quick overview</p>
+                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                          <li>Home shows your summary and upcoming appointments.</li>
+                          <li>Schedule lets you request a time with your physiotherapist.</li>
+                          <li>Community helps you ask questions and get support.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="font-medium text-card-foreground">Practical examples</p>
+                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                          <li><span className="font-medium">Book an appointment:</span> Go to Schedule → pick a date and time → choose Flora or Mugisha → Book. You’ll see the request as “pending” until approved.</li>
+                          <li><span className="font-medium">Join a video session:</span> When approved, your appointment will show a “Join Call” button shortly before the session starts.</li>
+                          <li><span className="font-medium">Ask the community:</span> Open Community → post a question or browse tips from others.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="font-medium text-card-foreground">Tips for success</p>
+                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                          <li>Pick a time that’s in the future to avoid booking errors.</li>
+                          <li>Allow notifications so you don’t miss approvals or reminders.</li>
+                          <li>Keep your profile updated so your care team can help faster.</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                      <img src="/step%201.jpg" alt="Step 1" className="rounded-xl border" />
+                      <img src="/step%202.jpg" alt="Step 2" className="rounded-xl border" />
+                      <img src="/step%203.jpg" alt="Step 3" className="rounded-xl border" />
+                      <img src="/step%204.jpg" alt="Step 4" className="rounded-xl border" />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardHeader>
+            </Card>
+
+            <Link to="/bmi" className="block">
+              <Card className="clay-card clay-fade-in hover:scale-[1.01] transition">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calculator className="h-5 w-5 text-primary" />
+                      BMI Calculator
+                    </CardTitle>
+                    <CardDescription>Check your Body Mass Index</CardDescription>
+                  </div>
+                  <button className="inline-flex items-center px-3 py-2 rounded-lg bg-emerald-500 text-white shadow hover:shadow-lg transition">
+                    Open
+                  </button>
+                </CardHeader>
+              </Card>
+            </Link>
+          </div>
         </>
       )}
       {activeTab === "devices" && <ExerciseList />}

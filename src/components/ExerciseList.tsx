@@ -8,7 +8,6 @@ export const ExerciseList = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [assignments, setAssignments] = useState<any[]>([]);
-  const [videosById, setVideosById] = useState<Record<string, any>>({});
   const [openVideoId, setOpenVideoId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,7 +17,6 @@ export const ExerciseList = () => {
       if (!user) {
         setUserId(null);
         setAssignments([]);
-        setVideosById({});
         setLoading(false);
         return;
       }
@@ -26,43 +24,22 @@ export const ExerciseList = () => {
 
       const { data: assignRows, error: assignErr } = await (supabase as any)
         .from('patient_exercise_assignments')
-        .select('id, video_id, notes, due_date, created_at')
+        .select(`
+          id, video_id, notes, due_date, created_at,
+          video:exercise_videos(*)
+        `)
         .eq('patient_id', user.id)
         .order('created_at', { ascending: false });
 
       if (assignErr) {
         console.error('Failed to load assignments', assignErr);
         setAssignments([]);
-        setVideosById({});
         setLoading(false);
         return;
       }
 
       const rows = assignRows || [];
       setAssignments(rows);
-
-      const videoIds = Array.from(new Set(rows.map((r: any) => r.video_id))).filter(Boolean);
-      if (videoIds.length === 0) {
-        setVideosById({});
-        setLoading(false);
-        return;
-      }
-
-      const { data: videoRows, error: videoErr } = await (supabase as any)
-        .from('exercise_videos')
-        .select('*')
-        .in('id', videoIds);
-
-      if (videoErr) {
-        console.error('Failed to load videos', videoErr);
-        setVideosById({});
-        setLoading(false);
-        return;
-      }
-
-      const map: Record<string, any> = {};
-      (videoRows || []).forEach((v: any) => { map[v.id] = v; });
-      setVideosById(map);
       setLoading(false);
     };
 
@@ -94,10 +71,10 @@ export const ExerciseList = () => {
           <div className="text-sm text-muted-foreground">No exercises assigned yet.</div>
         ) : (
           assignments.map((a) => {
-            const v = videosById[a.video_id];
+            const v = a.video;
             if (!v) return null;
             const difficulty = (v.difficulty || 'assigned') as string;
-            const duration = typeof v.duration_seconds === 'number' ? `${Math.round(v.duration_seconds / 60)} min` : null;
+            const duration = typeof v.duration_seconds === 'number' ? `${v.duration_seconds} sec` : null;
             return (
               <div
                 key={a.id}
@@ -155,7 +132,7 @@ export const ExerciseList = () => {
       <Dialog open={!!openVideoId} onOpenChange={(open) => !open && setOpenVideoId(null)}>
         <DialogContent className="max-w-2xl">
           {openVideoId && (() => {
-            const v = videosById[assignments.find((a) => a.video_id === openVideoId)?.video_id ?? ""];
+            const v = assignments.find((a) => a.video?.id === openVideoId)?.video;
             if (!v) return null;
             return (
               <>
@@ -174,8 +151,8 @@ export const ExerciseList = () => {
                   {v.description && (
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">{v.description}</p>
                   )}
-                  {assignments.find((a) => a.video_id === openVideoId)?.notes && (
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{assignments.find((a) => a.video_id === openVideoId)?.notes}</p>
+                  {assignments.find((a) => a.video?.id === openVideoId)?.notes && (
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{assignments.find((a) => a.video?.id === openVideoId)?.notes}</p>
                   )}
                 </div>
               </>

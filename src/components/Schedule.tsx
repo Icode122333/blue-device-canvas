@@ -33,6 +33,17 @@ export const Schedule = () => {
 
   const canSubmit = selectedDate && selectedTime && selectedPhysio && !submitting;
 
+  // Helper: disable past times for the selected date (matches DB CHECK scheduled_at > now())
+  const isPastSelectedTime = useMemo(() => (t: string) => {
+    if (!selectedDate) return false;
+    const [h, m] = t.split(":").map(Number);
+    const candidate = new Date(selectedDate);
+    candidate.setHours(h, m, 0, 0);
+    // small 60s skew to account for network clock differences
+    const now = new Date(Date.now() + 60 * 1000);
+    return candidate <= now;
+  }, [selectedDate]);
+
   const submit = async () => {
     if (!selectedDate || !selectedTime) return;
     setSubmitting(true);
@@ -49,6 +60,12 @@ export const Schedule = () => {
       const [hours, minutes] = selectedTime.split(":").map(Number);
       const scheduledLocal = new Date(selectedDate);
       scheduledLocal.setHours(hours, minutes, 0, 0);
+      // Client-side guard to satisfy DB CHECK (scheduled_at > now())
+      if (scheduledLocal <= new Date()) {
+        toast({ title: "Pick a future time", description: "Please choose a time later than now.", variant: "destructive" });
+        setSubmitting(false);
+        return;
+      }
       const scheduledISO = scheduledLocal.toISOString();
 
       const { error } = await supabase
@@ -146,15 +163,25 @@ export const Schedule = () => {
         <div className="bg-card rounded-xl border p-3 sm:col-span-2">
           <label className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-4 w-4" /> Time</label>
           <div className="mt-2 flex flex-wrap gap-2">
-            {times.map((t) => (
-              <button
-                key={t}
-                onClick={() => setSelectedTime(t)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${selectedTime === t ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted"}`}
-              >
-                {t}
-              </button>
-            ))}
+            {times.map((t) => {
+              const disabled = isPastSelectedTime(t);
+              return (
+                <button
+                  key={t}
+                  onClick={() => !disabled && setSelectedTime(t)}
+                  disabled={disabled}
+                  className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                    disabled
+                      ? "opacity-50 cursor-not-allowed bg-muted"
+                      : selectedTime === t
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background hover:bg-muted"
+                  }`}
+                >
+                  {t}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
