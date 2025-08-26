@@ -75,51 +75,38 @@ export const Schedule = () => {
   };
 
   return (
-    <div className="px-4 pt-16 pb-28 bg-gradient-to-b from-background to-secondary/20">
+    <div className="px-4 pt-16 pb-28">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-xl">
-            <CalendarIcon className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Schedule Appointment</h1>
-            <p className="text-sm text-muted-foreground">Book your next session</p>
-          </div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <CalendarIcon className="h-5 w-5 text-primary" />
+          <h1 className="text-xl font-semibold">Schedule Appointment</h1>
         </div>
-        <div className="flex items-center gap-2 bg-card rounded-xl p-2 shadow-soft border">
-          <button 
-            aria-label="Previous Month" 
-            className="p-2 rounded-lg hover:bg-accent/50 transition-colors" 
-            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-          >
+        <div className="flex items-center gap-2">
+          <button aria-label="Previous Month" className="p-2 rounded-lg border hover:bg-muted" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <span className="text-sm font-semibold w-32 text-center px-2">{format(currentMonth, "MMMM yyyy")}</span>
-          <button 
-            aria-label="Next Month" 
-            className="p-2 rounded-lg hover:bg-accent/50 transition-colors" 
-            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-          >
+          <span className="text-sm font-medium w-32 text-center">{format(currentMonth, "MMMM yyyy")}</span>
+          <button aria-label="Next Month" className="p-2 rounded-lg border hover:bg-muted" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
       </div>
 
       {/* Calendar */}
-      <div className="bg-card rounded-2xl border shadow-soft p-6 mb-6">
-        <div className="grid grid-cols-7 text-sm font-medium text-muted-foreground mb-4">
-          <div className="text-center">Sun</div>
-          <div className="text-center">Mon</div>
-          <div className="text-center">Tue</div>
-          <div className="text-center">Wed</div>
-          <div className="text-center">Thu</div>
-          <div className="text-center">Fri</div>
-          <div className="text-center">Sat</div>
+      <div className="bg-card rounded-xl border p-4">
+        <div className="grid grid-cols-7 text-xs text-muted-foreground mb-2">
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
         </div>
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1">
           {Array.from({ length: leadingEmptyDays }).map((_, i) => (
-            <div key={`empty-${i}`} className="h-12" />
+            <div key={`empty-${i}`} className="h-10" />
           ))}
           {monthDays.map((day) => {
             const selected = selectedDate && isSameDay(day, selectedDate);
@@ -127,9 +114,9 @@ export const Schedule = () => {
             return (
               <button
                 key={day.toISOString()}
-                className={`h-12 rounded-xl text-sm font-medium transition-all transform hover:scale-105
-                  ${selected ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-medium" : "bg-background hover:bg-accent/50 border border-border hover:border-primary/30"}
-                  ${today && !selected ? "border-2 border-primary/60 bg-primary/5" : ""}
+                className={`h-10 rounded-lg text-sm border transition-colors
+                  ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted"}
+                  ${today && !selected ? "border-primary/40" : "border-border"}
                 `}
                 onClick={() => setSelectedDate(day)}
               >
@@ -141,47 +128,29 @@ export const Schedule = () => {
       </div>
 
       {/* Selector Row */}
-      <div className="grid grid-cols-1 gap-4 mb-6">
-        <div className="bg-card rounded-2xl border shadow-soft p-4">
-          <label className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-            <User2 className="h-4 w-4 text-primary" />
-            Choose Physiotherapist
-          </label>
-          <div className="flex gap-3">
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="bg-card rounded-xl border p-3">
+          <label className="text-xs text-muted-foreground">Physiotherapist</label>
+          <div className="mt-2 flex gap-2">
             {physiotherapists.map((p) => (
               <button
                 key={p}
                 onClick={() => setSelectedPhysio(p)}
-                className={`flex-1 px-4 py-3 rounded-xl text-sm font-medium transition-all transform hover:scale-105 ${
-                  selectedPhysio === p 
-                    ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-medium" 
-                    : "bg-accent/30 hover:bg-accent/50 text-foreground border border-accent/50"
-                }`}
+                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${selectedPhysio === p ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted"}`}
               >
-                <span className="inline-flex items-center gap-2">
-                  <User2 className="h-4 w-4" /> 
-                  {p}
-                </span>
+                <span className="inline-flex items-center gap-1"><User2 className="h-4 w-4" /> {p}</span>
               </button>
             ))}
           </div>
         </div>
-        
-        <div className="bg-card rounded-2xl border shadow-soft p-4">
-          <label className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Clock className="h-4 w-4 text-primary" /> 
-            Select Time
-          </label>
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        <div className="bg-card rounded-xl border p-3 sm:col-span-2">
+          <label className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-4 w-4" /> Time</label>
+          <div className="mt-2 flex flex-wrap gap-2">
             {times.map((t) => (
               <button
                 key={t}
                 onClick={() => setSelectedTime(t)}
-                className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-all transform hover:scale-105 ${
-                  selectedTime === t 
-                    ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-medium" 
-                    : "bg-accent/30 hover:bg-accent/50 text-foreground border border-accent/50"
-                }`}
+                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${selectedTime === t ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted"}`}
               >
                 {t}
               </button>
@@ -191,28 +160,15 @@ export const Schedule = () => {
       </div>
 
       {/* Action */}
-      <div className="bg-card rounded-2xl border shadow-soft p-4">
+      <div className="mt-4">
         <button
           disabled={!canSubmit}
           onClick={submit}
-          className={`w-full py-4 rounded-xl font-semibold text-sm transition-all transform ${
-            canSubmit 
-              ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-medium hover:scale-105 active:scale-95" 
-              : "bg-muted text-muted-foreground cursor-not-allowed"
-          }`}
+          className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {submitting ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
-              Booking...
-            </div>
-          ) : (
-            "Book Appointment"
-          )}
+          {submitting ? "Booking..." : "Book Appointment"}
         </button>
-        <p className="mt-3 text-xs text-center text-muted-foreground bg-accent/20 rounded-lg p-2">
-          💡 Appointments remain pending until approved by an admin
-        </p>
+        <p className="mt-2 text-xs text-muted-foreground">Appointments remain pending until approved by an admin.</p>
       </div>
     </div>
   );

@@ -12,8 +12,6 @@ import { ExerciseList } from "@/components/ExerciseList";
 import { AppointmentList } from "@/components/AppointmentList";
 import { Community } from "@/components/Community";
 import { Schedule } from "@/components/Schedule";
-import { Guides } from "@/components/Guides";
-import { LocalDevices } from "@/components/LocalDevices";
 import { Navigate } from 'react-router-dom';
 
 export const AppWrapper = () => {
@@ -153,8 +151,6 @@ export const AppWrapper = () => {
         <>
           <InfoCard />
           <AppointmentList />
-          <Guides />
-          <LocalDevices />
         </>
       )}
       {activeTab === "devices" && <ExerciseList />}
