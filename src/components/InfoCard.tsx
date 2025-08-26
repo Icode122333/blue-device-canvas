@@ -23,12 +23,12 @@ export const InfoCard = () => {
               <ArrowRight className="h-4 w-4" />
             </button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
             <DialogHeader>
               <DialogTitle>About Cerebral Palsy (CP)</DialogTitle>
               <DialogDescription>Understand CP in simple terms</DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 text-sm text-muted-foreground">
+            <div className="flex-1 overflow-y-auto space-y-4 text-sm text-muted-foreground pr-2">
               <div>
                 <p className="font-medium text-card-foreground">What is CP?</p>
                 <p>CP is a group of conditions that affect movement, muscle tone, and posture due to early brain development differences or injury.</p>

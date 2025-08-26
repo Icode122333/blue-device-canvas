@@ -14,32 +14,70 @@ export const ExerciseList = () => {
     const load = async () => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) {
-        setUserId(null);
-        setAssignments([]);
         setLoading(false);
         return;
       }
       setUserId(user.id);
 
-      const { data: assignRows, error: assignErr } = await (supabase as any)
+      // First, get the user's profile to check if they're a patient
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('Failed to load user profile', profileError);
+        setLoading(false);
+        return;
+      }
+
+      let query = supabase
         .from('patient_exercise_assignments')
         .select(`
-          id, video_id, notes, due_date, created_at,
-          video:exercise_videos(*)
-        `)
-        .eq('patient_id', user.id)
-        .order('created_at', { ascending: false });
+          id, 
+          video_id, 
+          notes, 
+          due_date, 
+          created_at,
+          video:exercise_videos!inner(
+            id,
+            title,
+            description,
+            video_url,
+            thumbnail_url,
+            difficulty,
+            duration_seconds
+          )
+        `);
 
-      if (assignErr) {
-        console.error('Failed to load assignments', assignErr);
+      // If user is a patient, only show their assigned exercises
+      if (profile.role === 'patient') {
+        query = query.eq('patient_id', user.id);
+      } 
+      // If user is a physio, show all assignments
+      else if (profile.role === 'physio') {
+        // No additional filters needed for physio
+      }
+      // For other roles, don't show any exercises
+      else {
         setAssignments([]);
         setLoading(false);
         return;
       }
 
-      const rows = assignRows || [];
-      setAssignments(rows);
+      const { data: assignmentsData, error: assignErr } = await query
+        .order('created_at', { ascending: false });
+
+      if (assignErr) {
+        console.error('Failed to load exercise assignments', assignErr);
+        setAssignments([]);
+      } else {
+        setAssignments(assignmentsData || []);
+      }
+      
       setLoading(false);
     };
 

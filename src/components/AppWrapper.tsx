@@ -171,12 +171,12 @@ export const AppWrapper = () => {
                       Open Guide
                     </button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl">
+                  <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
                     <DialogHeader>
                       <DialogTitle>How to use the app</DialogTitle>
                       <DialogDescription>Follow these steps to get started</DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4 text-sm text-muted-foreground">
+                    <div className="flex-1 overflow-y-auto space-y-4 text-sm text-muted-foreground pr-2">
                       <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-lg p-3">
                         <p className="font-medium text-emerald-900">Quick overview</p>
                         <ul className="list-disc pl-5 mt-1 space-y-1">
@@ -203,12 +203,12 @@ export const AppWrapper = () => {
                           <li>Keep your profile updated so your care team can help faster.</li>
                         </ul>
                       </div>
-                    </div>
-                    <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                      <img src="/step%201.jpg" alt="Step 1" className="rounded-xl border" />
-                      <img src="/step%202.jpg" alt="Step 2" className="rounded-xl border" />
-                      <img src="/step%203.jpg" alt="Step 3" className="rounded-xl border" />
-                      <img src="/step%204.jpg" alt="Step 4" className="rounded-xl border" />
+                      <div className="space-y-4">
+                        <img src="/step%201.jpg" alt="Step 1" className="rounded-xl border w-full" />
+                        <img src="/step%202.jpg" alt="Step 2" className="rounded-xl border w-full" />
+                        <img src="/step%203.jpg" alt="Step 3" className="rounded-xl border w-full" />
+                        <img src="/step%204.jpg" alt="Step 4" className="rounded-xl border w-full" />
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
