@@ -12,6 +12,10 @@ import { ExerciseList } from "@/components/ExerciseList";
 import { AppointmentList } from "@/components/AppointmentList";
 import { Community } from "@/components/Community";
 import { Schedule } from "@/components/Schedule";
+import { Guides } from "@/components/Guides";
+import { LocalDevices } from "@/components/LocalDevices";
+import { ModernSchedule } from "@/components/ModernSchedule";
+import { ModernCommunity } from "@/components/ModernCommunity";
 import { Navigate } from 'react-router-dom';
 
 export const AppWrapper = () => {
@@ -144,18 +148,22 @@ export const AppWrapper = () => {
 
   // Patient Dashboard
   return (
-    <div className="min-h-screen bg-secondary/20 pb-28">
+    <div className="min-h-screen bg-gradient-to-br from-pale-blue to-background pb-28">
       <ProfileHeader />
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       {activeTab === "home" && (
-        <>
+        <div className="animate-fade-in">
           <InfoCard />
           <AppointmentList />
-        </>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4">
+            <Guides />
+            <LocalDevices />
+          </div>
+        </div>
       )}
       {activeTab === "devices" && <ExerciseList />}
-      {activeTab === "schedule" && <Schedule />}
-      {activeTab === "community" && <Community />}
+      {activeTab === "schedule" && <ModernSchedule />}
+      {activeTab === "community" && <ModernCommunity />}
     </div>
   );
 };
