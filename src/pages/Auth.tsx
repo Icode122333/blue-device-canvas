@@ -44,7 +44,7 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
           setError("Please choose a username");
           return;
         }
-        
+
         const redirectUrl = `${window.location.origin}/`;
         const { error } = await supabase.auth.signUp({
           email,
@@ -58,7 +58,7 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
           }
         });
         if (error) throw error;
-        toast({ 
+        toast({
           title: "Account created successfully!",
           description: "Please check your email to verify your account."
         });
@@ -71,7 +71,7 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 flex items-center justify-center p-4 pt-20 pb-8 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-200/30 rounded-full blur-3xl"></div>
@@ -83,9 +83,9 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
         {/* Logo Section */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-24 h-24 bg-white rounded-2xl shadow-lg mb-4 clay-card">
-            <img 
-              src="/logo RBapp.png" 
-              alt="RB App Logo" 
+            <img
+              src="/logo RBapp.png"
+              alt="RB App Logo"
               className="w-16 h-16 object-contain"
             />
           </div>
@@ -99,157 +99,153 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
               {isLogin ? "Sign In" : "Create Account"}
             </CardTitle>
             <CardDescription className="text-slate-600">
-              {isLogin 
-                ? "Enter your credentials to access your account" 
+              {isLogin
+                ? "Enter your credentials to access your account"
                 : "Create a new account to get started"
               }
             </CardDescription>
           </CardHeader>
-        <CardContent className="space-y-4">
-          {!isLogin && (
-            <div className="space-y-4">
-              <Label className="text-slate-700 font-medium">Select your role</Label>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setSelectedRole('chw')}
-                  className={`relative h-24 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center gap-2 ${
-                    selectedRole === 'chw' 
-                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-lg scale-105' 
+          <CardContent className="space-y-4">
+            {!isLogin && (
+              <div className="space-y-4">
+                <Label className="text-slate-700 font-medium">Select your role</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('chw')}
+                    className={`relative h-24 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center gap-2 ${selectedRole === 'chw'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-lg scale-105'
                       : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50 text-slate-600'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    selectedRole === 'chw' ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'
-                  }`}>
-                    <Users className="h-5 w-5" />
-                  </div>
-                  <span className="text-sm font-medium">CHW</span>
-                  {selectedRole === 'chw' && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                      }`}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${selectedRole === 'chw' ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                      <Users className="h-5 w-5" />
                     </div>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedRole('patient')}
-                  className={`relative h-24 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center gap-2 ${
-                    selectedRole === 'patient' 
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-lg scale-105' 
+                    <span className="text-sm font-medium">CHW</span>
+                    {selectedRole === 'chw' && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('patient')}
+                    className={`relative h-24 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center gap-2 ${selectedRole === 'patient'
+                      ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-lg scale-105'
                       : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50 text-slate-600'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    selectedRole === 'patient' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-600'
-                  }`}>
-                    <Heart className="h-5 w-5" />
-                  </div>
-                  <span className="text-sm font-medium">Patient</span>
-                  {selectedRole === 'patient' && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                      }`}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${selectedRole === 'patient' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                      <Heart className="h-5 w-5" />
                     </div>
-                  )}
-                </button>
+                    <span className="text-sm font-medium">Patient</span>
+                    {selectedRole === 'patient' && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    )}
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-slate-700 font-medium">Username</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Choose a username"
+                    className="h-12 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl"
+                    required
+                  />
+                </div>
               </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-slate-700 font-medium">Username</Label>
+                <Label htmlFor="email" className="text-slate-700 font-medium">Email</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Choose a username"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
                   className="h-12 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl"
                   required
                 />
               </div>
-            </div>
-          )}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-slate-700 font-medium">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="h-12 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl"
+                  required
+                />
+              </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-700 font-medium">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="h-12 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-700 font-medium">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="h-12 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl"
-                required
-              />
-            </div>
-
-            {error && (
-              <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-800 rounded-xl">
-                <AlertDescription className="text-sm">{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <Button 
-              type="submit" 
-              className="w-full h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed" 
-              disabled={loading}
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Loading...
-                </div>
-              ) : (
-                isLogin ? "Sign In" : "Create Account"
+              {error && (
+                <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-800 rounded-xl">
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
+                </Alert>
               )}
-            </Button>
-          </form>
 
-          <div className="text-center text-sm pt-4 border-t border-slate-100">
-            {isLogin ? (
-              <p className="text-slate-600">
-                Don't have an account?{" "}
-                <button
-                  type="button"
-                  className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline transition-colors"
-                  onClick={() => setIsLogin(false)}
-                >
-                  Sign up
-                </button>
-              </p>
-            ) : (
-              <p className="text-slate-600">
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline transition-colors"
-                  onClick={() => setIsLogin(true)}
-                >
-                  Sign in
-                </button>
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading}
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Loading...
+                  </div>
+                ) : (
+                  isLogin ? "Sign In" : "Create Account"
+                )}
+              </Button>
+            </form>
 
-      {/* Footer */}
-      <div className="absolute bottom-4 left-0 right-0 text-center">
-        <p className="text-slate-500 text-xs">
-          Secure • Private • HIPAA Compliant
-        </p>
-      </div>
+            <div className="text-center text-sm pt-6 border-t border-slate-100">
+              {isLogin ? (
+                <p className="text-slate-600">
+                  Don't have an account?{" "}
+                  <button
+                    type="button"
+                    className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline transition-colors"
+                    onClick={() => setIsLogin(false)}
+                  >
+                    Sign up
+                  </button>
+                </p>
+              ) : (
+                <p className="text-slate-600">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline transition-colors"
+                    onClick={() => setIsLogin(true)}
+                  >
+                    Sign in
+                  </button>
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Footer */}
+        <div className="mt-8 text-center">
+          <p className="text-slate-500 text-xs">
+            Secure • Private • HIPAA Compliant
+          </p>
+        </div>
       </div>
     </div>
   );

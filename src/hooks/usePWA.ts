@@ -20,9 +20,11 @@ export const usePWA = () => {
       }
     };
 
-    // Handle install prompt
+    // Handle install prompt - prevent browser's native prompt
     const handleBeforeInstallPrompt = (e: Event) => {
+      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
+      // Stash the event so it can be triggered later
       setDeferredPrompt(e as PWAInstallPrompt);
       setIsInstallable(true);
     };
