@@ -3,22 +3,158 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Emma's Journey - Therapy Management App</title>
+    <title>RBapp - Therapy Management App</title>
     <meta name="description" content="Personal therapy management app for tracking devices, appointments, and progress in cerebral palsy treatment" />
     <meta name="author" content="Therapy Management" />
 
-    <meta property="og:title" content="Emma's Journey - Therapy Management App" />
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#10b981" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="RBapp" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="RBapp" />
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="512x512" href="/app icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/app icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/app icon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/app icon.png" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/app icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/app icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/app icon.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/app icon.png" />
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileImage" content="/app icon.png" />
+    <meta name="msapplication-TileColor" content="#10b981" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="RBapp - Therapy Management App" />
     <meta property="og:description" content="Personal therapy management app for tracking devices, appointments, and progress in cerebral palsy treatment" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="/app icon.png" />
+    <meta property="og:url" content="/" />
 
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:title" content="RBapp - Therapy Management App" />
+    <meta name="twitter:description" content="Personal therapy management app for tracking devices, appointments, and progress in cerebral palsy treatment" />
+    <meta name="twitter:image" content="/app icon.png" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+              
+              // Check for updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New content is available, show update notification
+                    if (confirm('New version available! Reload to update?')) {
+                      window.location.reload();
+                    }
+                  }
+                });
+              });
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+
+      // Install prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show install button or banner
+        const installBanner = document.createElement('div');
+        installBanner.innerHTML = `
+          <div style="
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: system-ui, -apple-system, sans-serif;
+          ">
+            <div>
+              <div style="font-weight: 600; margin-bottom: 4px;">Install RBapp</div>
+              <div style="font-size: 14px; opacity: 0.9;">Add to your home screen for quick access</div>
+            </div>
+            <div>
+              <button id="install-btn" style="
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                margin-right: 8px;
+              ">Install</button>
+              <button id="dismiss-btn" style="
+                background: transparent;
+                border: none;
+                color: white;
+                padding: 8px;
+                border-radius: 8px;
+                cursor: pointer;
+                opacity: 0.7;
+              ">✕</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(installBanner);
+        
+        document.getElementById('install-btn').addEventListener('click', () => {
+          installBanner.remove();
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+          });
+        });
+        
+        document.getElementById('dismiss-btn').addEventListener('click', () => {
+          installBanner.remove();
+        });
+      });
+
+      // Track install
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('App was installed');
+      });
+    </script>
   </body>
 </html>
