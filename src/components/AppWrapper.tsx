@@ -234,7 +234,7 @@ export const AppWrapper = () => {
           </div>
         </>
       )}
-      {activeTab === "devices" && <ExerciseList />}
+      {activeTab === "exercises" && <ExerciseList />}
       {activeTab === "schedule" && <Schedule />}
       {activeTab === "community" && <Community />}
     </div>

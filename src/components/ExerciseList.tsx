@@ -14,7 +14,7 @@ export const ExerciseList = () => {
     const load = async () => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         setLoading(false);
         return;
@@ -56,7 +56,7 @@ export const ExerciseList = () => {
       // If user is a patient, only show their assigned exercises
       if (profile.role === 'patient') {
         query = query.eq('patient_id', user.id);
-      } 
+      }
       // If user is a physio, show all assignments
       else if (profile.role === 'physio') {
         // No additional filters needed for physio
@@ -77,7 +77,7 @@ export const ExerciseList = () => {
       } else {
         setAssignments(assignmentsData || []);
       }
-      
+
       setLoading(false);
     };
 
@@ -104,9 +104,55 @@ export const ExerciseList = () => {
       {/* Exercise Cards */}
       <div className="px-4 space-y-4">
         {loading ? (
-          <div className="text-sm text-muted-foreground">Loading assigned exercises...</div>
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6">
+            <div className="clay-card clay-fade-in max-w-md w-full text-center p-8 space-y-6">
+              <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-inner">
+                <div className="w-12 h-12 rounded-full bg-white/80 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold text-slate-900">Loading Exercises</h3>
+                <p className="text-sm text-muted-foreground">Please wait while we fetch your assigned exercises...</p>
+              </div>
+            </div>
+          </div>
         ) : assignments.length === 0 ? (
-          <div className="text-sm text-muted-foreground">No exercises assigned yet.</div>
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6">
+            <div className="clay-card clay-fade-in max-w-md w-full text-center p-8 space-y-6">
+              {/* Icon */}
+              <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center shadow-inner">
+                <div className="w-12 h-12 rounded-full bg-white/80 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold text-slate-900">No Exercises Yet</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  No exercises have been assigned to you by your physiotherapist yet.
+                  Please wait - they will appear here as soon as they become available.
+                </p>
+              </div>
+
+              {/* Decorative elements */}
+              <div className="flex justify-center space-x-2 opacity-60">
+                <div className="w-2 h-2 bg-emerald-300 rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+
+              {/* Helpful tip */}
+              <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-4">
+                <p className="text-xs text-emerald-800 font-medium">
+                  💡 Tip: Your physiotherapist will assign personalized exercises based on your assessment and progress.
+                </p>
+              </div>
+            </div>
+          </div>
         ) : (
           assignments.map((a) => {
             const v = a.video;
@@ -178,7 +224,7 @@ export const ExerciseList = () => {
                   <DialogTitle>{v.title}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3">
-                  <AspectRatio ratio={16/9}>
+                  <AspectRatio ratio={16 / 9}>
                     <video
                       src={v.video_url}
                       poster={v.thumbnail_url || undefined}
