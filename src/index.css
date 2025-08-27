@@ -139,9 +139,18 @@ All colors MUST be HSL.
   .clay-fade-in {
     animation: clay-fade-in 320ms ease-out;
   }
+
+  .install-prompt-grow {
+    animation: install-grow 2s ease-in-out infinite;
+  }
 }
 
 @keyframes clay-fade-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes install-grow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
 }

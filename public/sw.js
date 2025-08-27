@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rbapp-v1';
+const CACHE_NAME = 'rbapp-v2';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
@@ -38,6 +38,11 @@ self.addEventListener('fetch', (event) => {
         if (event.request.destination === 'document') {
           return caches.match('/');
         }
+        // For non-document requests, return a basic response to avoid null
+        return new Response('', { 
+          status: 408, 
+          statusText: 'Request Timeout' 
+        });
       })
   );
 });

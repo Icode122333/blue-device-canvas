@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { usePWA } from "@/hooks/usePWA";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Download, X, Share } from "lucide-react";
+import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const InstallPrompt = () => {
-  const { isInstallable, isInstalled, installApp, shareApp, canShare } = usePWA();
+  const { isInstallable, isInstalled, installApp } = usePWA();
   const [isDismissed, setIsDismissed] = useState(false);
   const { toast } = useToast();
 
@@ -19,73 +18,45 @@ export const InstallPrompt = () => {
         title: "App installed!",
         description: "RBapp has been added to your home screen.",
       });
-    }
-  };
-
-  const handleShare = async () => {
-    const success = await shareApp();
-    if (success) {
-      toast({
-        title: canShare ? "Shared successfully!" : "Link copied!",
-        description: canShare ? "App shared successfully" : "App link copied to clipboard",
-      });
+      setIsDismissed(true);
     }
   };
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 max-w-sm mx-auto">
-      <Card className="clay-card clay-fade-in border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
-              <img 
-                src="/app icon.png" 
-                alt="RBapp" 
-                className="w-6 h-6 rounded"
-              />
-            </div>
-            
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-emerald-900 text-sm">
-                Install RBapp
-              </h3>
-              <p className="text-xs text-emerald-700 mt-1">
-                Add to your home screen for quick access and offline use
-              </p>
-              
-              <div className="flex gap-2 mt-3">
-                <Button
-                  size="sm"
-                  onClick={handleInstall}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs px-3 py-1 h-8"
-                >
-                  <Download className="h-3 w-3 mr-1" />
-                  Install
-                </Button>
-                
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleShare}
-                  className="border-emerald-300 text-emerald-700 hover:bg-emerald-100 text-xs px-3 py-1 h-8"
-                >
-                  <Share className="h-3 w-3 mr-1" />
-                  Share
-                </Button>
-              </div>
-            </div>
-            
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setIsDismissed(true)}
-              className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 p-1 h-6 w-6"
-            >
-              <X className="h-3 w-3" />
-            </Button>
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-black via-green-600 to-black text-white shadow-lg install-prompt-grow">
+      <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+            <img 
+              src="/app icon.png" 
+              alt="RBapp" 
+              className="w-5 h-5 rounded"
+            />
           </div>
-        </CardContent>
-      </Card>
+          <span className="font-semibold text-white">
+            Install RBapp
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            onClick={handleInstall}
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 h-8 transition-all duration-200 hover:scale-105 border-0"
+          >
+            Install
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setIsDismissed(true)}
+            className="text-white hover:text-gray-200 hover:bg-white/10 px-3 py-2 h-8 border-0"
+          >
+            Close
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
