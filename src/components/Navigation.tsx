@@ -1,50 +1,50 @@
-import { Home, Play, Calendar, Users } from "lucide-react";
+import { Calendar, Home, Play, Users } from "lucide-react";
 
 const tabs = [
-  { id: "home", label: "Home", icon: Home, variant: "default" },
-  { id: "exercises", label: "exercises", icon: Play, variant: "primary" },
-  { id: "schedule", label: "Schedule", icon: Calendar, variant: "default" },
-  { id: "community", label: "Community", icon: Users, variant: "default" },
+  { id: "home", label: "Home", iconSrc: "/home.png" },
+  { id: "exercises", label: "Exercises", iconSrc: "/video-camera.png" },
+  { id: "schedule", label: "Schedule", iconSrc: "/calendar.png" },
+  { id: "community", label: "Community", iconSrc: "/group.png" },
 ];
 
-export const Navigation = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: string) => void }) => {
+export const Navigation = ({
+  activeTab,
+  onTabChange,
+}: {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}) => {
   return (
-    <>
-      {/* Bottom Pill Glass Navigation */}
-      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
-        <div className="pointer-events-auto inline-flex rounded-full border border-white/50 ring-1 ring-white/40 bg-white/70 backdrop-blur-xl shadow-[0_12px_36px_rgba(15,23,42,0.18)] clay-fade-in">
-          <nav className="flex items-center justify-center gap-3 px-3 py-2">
-            {tabs.map((tab) => {
-              const IconComponent = tab.icon;
-              const isPrimary = tab.variant === "primary" && activeTab === tab.id;
-              const isActive = activeTab === tab.id;
-              const baseBtn =
-                "flex items-center justify-center rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent hover:scale-[1.02] active:scale-[0.98]";
-              const primaryBtn =
-                "w-12 h-12 bg-emerald-500 hover:bg-emerald-500/95 text-white border border-emerald-300 shadow-[0_8px_20px_rgba(16,185,129,0.35)]";
-              const defaultBtn = `${
-                isActive
-                  ? "bg-white/90 text-slate-900 shadow-[inset_0_2px_6px_rgba(0,0,0,.06),0_8px_18px_rgba(15,23,42,.10)]"
-                  : "bg-white/60 text-slate-700 hover:bg-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,.9),0_6px_12px_rgba(15,23,42,.06)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,.9),0_10px_18px_rgba(15,23,42,.10)]"
-              } border border-white/70 w-12 h-12`;
-              return (
-                <div key={tab.id} className="flex flex-col items-center gap-1">
-                  <button 
-                    aria-label={tab.label} 
-                    className={`${baseBtn} ${isPrimary ? primaryBtn : defaultBtn}`}
-                    onClick={() => onTabChange(tab.id)}
-                  >
-                    <IconComponent className="h-5 w-5 drop-shadow-sm" strokeWidth={1.75} />
-                  </button>
-                  <span className={`text-[11px] font-semibold tracking-wide ${isActive ? "text-slate-900" : "text-slate-700/90"}`}>
-                    {tab.label}
-                  </span>
-                </div>
-              );
-            })}
-          </nav>
-        </div>
+    <div className="fixed bottom-5 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+      <div className="mobile-dock pointer-events-auto w-full max-w-md rounded-[2rem] px-2 py-2">
+        <nav className="grid grid-cols-4 gap-1" aria-label="Patient Navigation">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                aria-label={tab.label}
+                aria-pressed={isActive}
+                onClick={() => onTabChange(tab.id)}
+                className={`flex flex-col items-center justify-center gap-1 rounded-[1.35rem] px-2 py-3 text-center transition-all ${
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-[0_16px_30px_hsl(79_100%_62%_/_0.22)]"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <img 
+                  src={tab.iconSrc} 
+                  alt={tab.label} 
+                  className={`h-5 w-5 object-contain transition-all duration-300 ${isActive ? "scale-105 brightness-0 invert" : "opacity-70 group-hover:opacity-100"}`} 
+                />
+                <span className="text-[11px] font-semibold tracking-wide">{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
-    </>
+    </div>
   );
 };

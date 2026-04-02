@@ -9,7 +9,6 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import BMI from "./pages/BMI";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
-import { InstallPrompt } from "@/components/InstallPrompt";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +18,6 @@ const App = () => (
       <Toaster />
       <Sonner />
       <OfflineIndicator />
-      <InstallPrompt />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

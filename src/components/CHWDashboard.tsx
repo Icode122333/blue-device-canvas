@@ -10,7 +10,7 @@ export const CHWDashboard = () => {
   const [tab, setTab] = useState<"overview" | "reports" | "questions">("overview");
 
   return (
-    <div className="min-h-screen bg-secondary/10 pb-28">
+    <div className="screen-shell min-h-screen pb-32">
       <CHWHeader />
       <CHWNavigation active={tab} onChange={setTab} />
       <div className="p-4 space-y-6">

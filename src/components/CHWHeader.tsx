@@ -1,9 +1,8 @@
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
@@ -13,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Bell, ClipboardList, LogOut, MapPin, UsersRound } from "lucide-react";
 
 export const CHWHeader = () => {
   const { toast } = useToast();
@@ -29,11 +29,7 @@ export const CHWHeader = () => {
       const user = userData.user;
       if (!user) return;
       setEmail(user.email || "");
-      const { data } = await supabase
-        .from('profiles')
-        .select('username, avatar_url')
-        .eq('user_id', user.id)
-        .single();
+      const { data } = await supabase.from("profiles").select("username, avatar_url").eq("user_id", user.id).single();
       if (data) {
         setUsername(data.username || "");
         setAvatarUrl(data.avatar_url);
@@ -49,55 +45,52 @@ export const CHWHeader = () => {
       const user = userData.user;
       if (!user) return;
 
-      // Notify when a new patient is assigned to this CHW
       const chAssign = supabase
         .channel(`chw-assignments-${user.id}`)
-        .on('postgres_changes', {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'chw_assignments',
+        .on("postgres_changes", {
+          event: "INSERT",
+          schema: "public",
+          table: "chw_assignments",
           filter: `chw_id=eq.${user.id}`,
         } as any, async (payload: any) => {
           const patientId = payload?.new?.patient_id;
-          toast({ title: 'New patient assigned', description: `Patient ${patientId} was assigned to you.` });
-          setNotifCount((c) => c + 1);
-          setNotifs(prev => ([{
+          toast({ title: "New patient assigned", description: `Patient ${patientId} was assigned to you.` });
+          setNotifCount((count) => count + 1);
+          setNotifs((prevItems) => ([{
             id: String(payload?.new?.id ?? Date.now()),
-            title: 'New patient assigned',
+            title: "New patient assigned",
             description: `Patient ${patientId} was assigned to you.`,
             time: Date.now(),
-          }, ...prev]).slice(0, 20));
+          }, ...prevItems]).slice(0, 20));
         })
         .subscribe();
 
-      // Notify when someone replies to a question created by this CHW
       const chReplies = supabase
         .channel(`cq-replies-to-chw-${user.id}`)
-        .on('postgres_changes', {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'community_question_replies',
+        .on("postgres_changes", {
+          event: "INSERT",
+          schema: "public",
+          table: "community_question_replies",
         } as any, async (payload: any) => {
           try {
             const reply = payload?.new;
-            if (!reply) return;
-            if (reply.responder_id === user.id) return; // ignore self
+            if (!reply || reply.responder_id === user.id) return;
             const { data: q } = await supabase
-              .from('community_questions')
-              .select('user_id, content')
-              .eq('id', reply.question_id)
+              .from("community_questions")
+              .select("user_id, content")
+              .eq("id", reply.question_id)
               .single();
             if (q && q.user_id === user.id) {
-              toast({ title: 'New reply to your question', description: String(reply.content || '').slice(0, 120) });
-              setNotifCount((c) => c + 1);
-              setNotifs(prev => ([{
+              toast({ title: "New reply to your question", description: String(reply.content || "").slice(0, 120) });
+              setNotifCount((count) => count + 1);
+              setNotifs((prevItems) => ([{
                 id: String(payload?.new?.id ?? Date.now()),
-                title: 'New reply to your question',
-                description: String(reply.content || '').slice(0, 120),
+                title: "New reply to your question",
+                description: String(reply.content || "").slice(0, 120),
                 time: Date.now(),
-              }, ...prev]).slice(0, 20));
+              }, ...prevItems]).slice(0, 20));
             }
-          } catch (e) {
+          } catch {
             // ignore
           }
         })
@@ -108,72 +101,92 @@ export const CHWHeader = () => {
     setup();
 
     return () => {
-      channels.forEach((ch) => supabase.removeChannel(ch));
+      channels.forEach((channel) => supabase.removeChannel(channel));
     };
-  }, []);
+  }, [toast]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
 
-  const greetingName = username || email.split('@')[0] || 'there';
+  const greetingName = username || email.split("@")[0] || "there";
 
   return (
-    <div className="p-4 clay-card clay-fade-in">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 border-2 border-primary/20">
-            <AvatarImage src={avatarUrl || undefined} />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-              {greetingName.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <h1 className="text-lg font-semibold text-foreground">Hey 👋, {greetingName}</h1>
-            <p className="text-sm text-muted-foreground">Community Health Worker</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="relative p-2 rounded-full clay-button hover:scale-[1.02] active:scale-[0.98]">
-                <Bell className="h-5 w-5 text-muted-foreground drop-shadow-sm" strokeWidth={1.75} />
-                {notifCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
-                    {notifCount}
-                  </Badge>
-                )}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 clay-card">
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {notifs.length === 0 ? (
-                <div className="p-3 text-sm text-muted-foreground">No notifications</div>
-              ) : (
-                notifs.slice(0, 10).map((n) => (
-                  <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 whitespace-normal">
-                    <span className="font-medium">{n.title}</span>
-                    {n.description && (
-                      <span className="text-xs text-muted-foreground">{n.description}</span>
+    <div className="px-4 pt-4">
+      <div className="panel-soft overflow-hidden p-5 sm:p-6">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-14 w-14 border border-primary/25 bg-white/5">
+                <AvatarImage src={avatarUrl || undefined} />
+                <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                  {greetingName.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="accent-chip w-fit border-primary/20 bg-primary/10 text-primary">CHW dashboard</div>
+                <h1 className="mt-3 text-2xl font-bold text-white sm:text-3xl">Hello, {greetingName}</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Track assignments, patient activity, and questions from one field-ready hub.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="clay-button relative p-3 text-muted-foreground transition hover:text-white">
+                    <Bell className="h-5 w-5" strokeWidth={1.75} />
+                    {notifCount > 0 && (
+                      <Badge className="absolute -right-1 -top-1 h-5 min-w-5 rounded-full bg-primary px-1 text-[10px] text-primary-foreground">
+                        {notifCount}
+                      </Badge>
                     )}
-                    <span className="text-[10px] text-muted-foreground">{new Date(n.time).toLocaleString()}</span>
-                  </DropdownMenuItem>
-                ))
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setNotifCount(0)}>Mark all as read</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleSignOut}
-            className="p-2 rounded-full clay-button"
-          >
-            <LogOut className="h-5 w-5 text-muted-foreground drop-shadow-sm" strokeWidth={1.75} />
-          </Button>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80 bg-popover text-popover-foreground">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {notifs.length === 0 ? (
+                    <div className="p-3 text-sm text-muted-foreground">No notifications yet.</div>
+                  ) : (
+                    notifs.slice(0, 10).map((n) => (
+                      <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 whitespace-normal">
+                        <span className="font-medium">{n.title}</span>
+                        {n.description && <span className="text-xs text-muted-foreground">{n.description}</span>}
+                        <span className="text-[10px] text-muted-foreground">{new Date(n.time).toLocaleString()}</span>
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setNotifCount(0)}>Mark all as read</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button variant="outline" size="icon" onClick={handleSignOut}>
+                <LogOut className="h-5 w-5" strokeWidth={1.8} />
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              { icon: UsersRound, title: "Assignments", copy: "Stay aware of new patient pairings." },
+              { icon: ClipboardList, title: "Reports", copy: "Upload and review field observations quickly." },
+              { icon: MapPin, title: "Community", copy: "Keep track of replies and patient questions." },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="rounded-[1.5rem] border border-white/8 bg-white/5 p-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/12 text-primary">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold text-white">{item.title}</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">{item.copy}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -101,9 +101,10 @@ export const ImageUpload = ({ currentImageUrl, onImageUploaded, size = "md" }: I
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative group">
-        <Avatar className={`${sizeClasses[size]} border-2 border-border`}>
+        <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl" />
+        <Avatar className={`${sizeClasses[size]} relative border border-primary/25 bg-white/5 shadow-[0_20px_40px_hsl(79_100%_62%_/_0.16)]`}>
           <AvatarImage src={previewUrl || ""} />
-          <AvatarFallback className="bg-muted">
+          <AvatarFallback className="bg-secondary text-muted-foreground">
             <Camera className="h-6 w-6 text-muted-foreground" />
           </AvatarFallback>
         </Avatar>
@@ -112,7 +113,7 @@ export const ImageUpload = ({ currentImageUrl, onImageUploaded, size = "md" }: I
           <Button
             variant="destructive"
             size="sm"
-            className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute -right-2 -top-2 h-7 w-7 rounded-full p-0 opacity-0 transition-opacity group-hover:opacity-100"
             onClick={removeImage}
           >
             <X className="h-3 w-3" />
