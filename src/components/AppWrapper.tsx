@@ -154,7 +154,7 @@ export const AppWrapper = () => {
               {/* Top full-width card — Did you know */}
               <button className="relative w-full h-40 rounded-[1.4rem] overflow-hidden group text-left border border-emerald-800/40 shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
                 <img
-                  src="/res_did_you_know.png"
+                  src="/did%20you%20know.jpg"
                   alt="Did you know"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
@@ -184,7 +184,7 @@ export const AppWrapper = () => {
                   className="relative w-full h-44 rounded-[1.4rem] overflow-hidden group text-left border border-emerald-800/40 shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
                 >
                   <img
-                    src="/res_schedule.png"
+                    src="/appoinment.jpg"
                     alt="Schedule Appointment"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
@@ -204,7 +204,7 @@ export const AppWrapper = () => {
                   className="relative w-full h-44 rounded-[1.4rem] overflow-hidden group text-left border border-emerald-800/40 shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
                 >
                   <img
-                    src="/res_exercises.png"
+                    src="/exercises%20for%20you.jpg"
                     alt="Exercises for you"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
@@ -226,7 +226,7 @@ export const AppWrapper = () => {
                 className="relative w-full h-40 rounded-[1.4rem] overflow-hidden group text-left border border-amber-500/30 shadow-[0_4px_24px_rgba(212,175,55,0.12)]"
               >
                 <img
-                  src="/res_community.png"
+                  src="/community.jpg"
                   alt="Community for you"
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
