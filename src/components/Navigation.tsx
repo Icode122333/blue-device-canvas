@@ -37,7 +37,7 @@ export const Navigation = ({
                 <img 
                   src={tab.iconSrc} 
                   alt={tab.label} 
-                  className={`h-5 w-5 object-contain transition-all duration-300 ${isActive ? "scale-105 brightness-0 invert" : "opacity-70 group-hover:opacity-100"}`} 
+                  className={`h-5 w-5 object-contain transition-all duration-300 ${isActive ? "scale-105 brightness-0" : "brightness-0 invert opacity-70 hover:opacity-100"}`} 
                 />
                 <span className="text-[11px] font-semibold tracking-wide">{tab.label}</span>
               </button>

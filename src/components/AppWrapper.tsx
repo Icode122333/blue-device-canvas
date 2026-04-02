@@ -7,11 +7,11 @@ import { CHWDashboard } from "@/components/CHWDashboard";
 import { CHWOnboarding } from "@/components/CHWOnboarding";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { Navigation } from "@/components/Navigation";
-import { InfoCard } from "@/components/InfoCard";
 import { ExerciseList } from "@/components/ExerciseList";
 import { AppointmentList } from "@/components/AppointmentList";
 import { Community } from "@/components/Community";
 import { Schedule } from "@/components/Schedule";
+import { HomeVideos } from "@/components/HomeVideos";
 import { Navigate, Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
@@ -248,7 +248,6 @@ export const AppWrapper = () => {
           <div className="mx-4 my-6 h-px bg-emerald-800/40" />
 
           {/* ── Legacy sections ── */}
-          <InfoCard />
           <AppointmentList />
 
           <div className="mt-4 space-y-4 px-4">
@@ -328,6 +327,8 @@ export const AppWrapper = () => {
               </div>
             </Link>
           </div>
+
+          <HomeVideos />
         </>
       )}
 
