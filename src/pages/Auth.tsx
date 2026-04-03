@@ -121,35 +121,19 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
 
   if (introView === "splash") {
     return (
-      <div className="screen-shell min-h-screen overflow-hidden px-6 py-10">
-        <div className="app-grid absolute inset-0 opacity-50" />
-        <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl items-center justify-center">
-          <div className="panel-soft relative w-full max-w-md overflow-hidden px-8 py-16 text-center">
-            <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,hsl(79_100%_62%_/_0.24),transparent_70%)]" />
-            <div className="relative space-y-6">
-              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] border border-primary/30 bg-primary shadow-[0_24px_60px_hsl(79_100%_62%_/_0.22)] overflow-hidden">
-                <img src="/rblogo.jpeg" alt="Rise Better Logo" className="h-full w-full object-cover" />
-              </div>
-              <div className="space-y-3">
-                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/80">
-                  Rise Better
-                </p>
-                <h1 className="text-4xl font-bold text-white sm:text-5xl">
-                  Rehab care,
-                  <br />
-                  redesigned.
-                </h1>
-                <p className="mx-auto max-w-xs text-sm leading-6 text-muted-foreground">
-                  A calmer mobile experience for patients, caregivers, CHWs, and physiotherapists.
-                </p>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <span className="h-2.5 w-10 rounded-full bg-primary" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              </div>
-            </div>
+      <div
+        className="min-h-[100dvh] bg-emerald-900 flex flex-col items-center justify-center cursor-pointer"
+        onClick={() => setIntroView("features")}
+      >
+        <div className="animate-in fade-in zoom-in duration-700 flex flex-col items-center gap-6">
+          <div className="w-32 h-32 rounded-[2.5rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.35)] border-4 border-amber-500/40">
+            <img src="/rblogo.jpeg" alt="RBapp Logo" className="w-full h-full object-cover" />
           </div>
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl font-extrabold text-white tracking-tight">RBapp</h1>
+            <p className="text-amber-400 text-sm font-semibold uppercase tracking-[0.3em]">Rise Better</p>
+          </div>
+          <p className="text-white/40 text-xs mt-8 animate-pulse">Tap to continue</p>
         </div>
       </div>
     );
@@ -158,62 +142,39 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
   if (introView === "features") {
     const screens = [
       {
-        title: "Rise Better",
-        desc: "Unlock the full power of your recovery data.",
+        title: "Care Beyond the Hospital",
+        desc: "Continue rehabilitation at home with guided support designed for caregivers and families.",
+        image: "/incusion 2.png",
       },
       {
-        title: "Guidance you can trust",
-        desc: "Achieve your goals with daily missions designed with physiotherapists.",
+        title: "Personalized Support",
+        desc: "Receive tailored rehabilitation plans, progress tracking, and simple daily guidance.",
+        image: "/peronalize care.png",
       },
       {
-        title: "You're in control",
-        desc: "Share a Health Report with your care team. Control what data you share.",
+        title: "Connected Care",
+        desc: "Stay connected with physiotherapists, community support, and essential assistive resources.",
+        image: "/connected-care.jpg",
       }
     ];
 
     const current = screens[featureIndex];
 
     return (
-      <div className="min-h-[100dvh] bg-white text-black flex flex-col font-sans">
-        <div className="flex-1 overflow-y-auto flex flex-col pt-12 pb-8 px-6">
+      <div className="min-h-[100dvh] bg-emerald-900 text-white flex flex-col font-sans">
+        <div className="flex-1 overflow-y-auto flex flex-col pt-10 pb-8 px-6">
           <div className="flex-1 w-full max-w-md mx-auto flex flex-col items-center justify-center">
-            {featureIndex === 0 && (
-              <div className="w-full aspect-[4/3] relative mb-10 rounded-[1.75rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-[#f8f9fa] flex items-center justify-center p-4 border border-black/5">
-                <img src="/screen1_hero.png" alt="Devices" className="w-full h-full object-contain mix-blend-multiply" />
-              </div>
-            )}
-            
-            {featureIndex === 1 && (
-              <div className="w-full grid grid-cols-2 gap-3 mb-10 h-[380px]">
-                <div className="col-span-1 h-[180px] rounded-[1.5rem] overflow-hidden bg-[#f0f2f5]">
-                   <img src="/screen2_workout.png" alt="Workout" className="w-full h-full object-cover" />
-                </div>
-                <div className="col-span-1 h-[180px] rounded-[1.5rem] overflow-hidden bg-[#e8f3ee]">
-                   <img src="/screen2_ui_food.png" alt="UI" className="w-full h-full object-contain p-2" />
-                </div>
-                <div className="col-span-2 h-[180px] rounded-[1.5rem] overflow-hidden bg-[#f5f4f0] flex items-center justify-center">
-                   <img src="/screen2_cards.png" alt="Cards" className="w-full h-full object-cover" />
-                </div>
-              </div>
-            )}
-
-            {featureIndex === 2 && (
-              <div className="w-full grid grid-cols-2 gap-3 mb-10 h-[380px]">
-                <div className="col-span-2 h-[180px] rounded-[1.5rem] overflow-hidden bg-[#f8f9fa]">
-                   <img src="/screen3_relaxing.png" alt="Relaxing" className="w-full h-full object-cover" />
-                </div>
-                <div className="col-span-1 h-[180px] rounded-[1.5rem] overflow-hidden bg-[#f5f6f8] p-2 flex items-center justify-center">
-                   <img src="/screen3_chart.png" alt="Chart" className="w-full h-full object-contain mix-blend-multiply" />
-                </div>
-                <div className="col-span-1 h-[180px] rounded-[1.5rem] overflow-hidden bg-[#f5f6f8] p-2 flex items-center justify-center">
-                   <img src="/screen3_apps.png" alt="Apps" className="w-full h-full object-contain mix-blend-multiply" />
-                </div>
-              </div>
-            )}
+            <div className="w-full aspect-[4/3] relative mb-10 rounded-[1.75rem] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.3)] bg-emerald-800 flex items-center justify-center border-2 border-amber-500/20">
+              <img
+                src={current.image}
+                alt={current.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
             <div className="text-center w-full px-2 mt-auto">
-              <h2 className="text-[28px] leading-tight font-bold tracking-tight text-gray-900 mb-3">{current.title}</h2>
-              <p className="text-[15px] leading-relaxed text-[#6b7280] font-normal max-w-[280px] mx-auto">
+              <h2 className="text-[28px] leading-tight font-bold tracking-tight text-amber-400 mb-3">{current.title}</h2>
+              <p className="text-[15px] leading-relaxed text-white/70 font-normal max-w-[280px] mx-auto">
                 {current.desc}
               </p>
             </div>
@@ -223,7 +184,7 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
                 <div
                   key={idx}
                   className={`h-[5px] rounded-full transition-all duration-300 ${
-                    featureIndex === idx ? "w-4 bg-gray-900" : "w-[5px] bg-gray-300"
+                    featureIndex === idx ? "w-4 bg-amber-500" : "w-[5px] bg-white/30"
                   }`}
                 />
               ))}
@@ -237,9 +198,9 @@ export const Auth = ({ onRoleSelect }: AuthProps) => {
                   setFeatureIndex(prev => prev + 1);
                 }
               }}
-              className="w-full bg-[#0f0f0f] hover:bg-black text-white text-[15px] font-medium py-4 rounded-[1.125rem] transition-all active:scale-[0.98]"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-amber-400 text-[15px] font-bold py-4 rounded-[1.125rem] transition-all active:scale-[0.98] shadow-lg"
             >
-              Get started
+              {featureIndex === screens.length - 1 ? "Get Started" : "Next"}
             </button>
           </div>
         </div>
