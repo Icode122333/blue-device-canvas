@@ -202,27 +202,27 @@ const ExercisesTab = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Upload Exercise Video</CardTitle>
+      <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+        <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+          <CardTitle className="text-white">Upload Exercise Video</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
-              <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Seated Knee Extension" />
+              <Input className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Seated Knee Extension" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Input id="category" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g., knee, cardio" />
+              <Input className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="category" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g., knee, cardio" />
             </div>
             <div className="space-y-2">
               <Label>Difficulty</Label>
               <Select value={difficulty} onValueChange={setDifficulty}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white border-emerald-200 text-black">
                   <SelectValue placeholder="Select difficulty" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white border-emerald-200 text-black">
                   {difficultyOptions.map(d => (
                     <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
                   ))}
@@ -231,19 +231,19 @@ const ExercisesTab = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="duration">Duration (seconds)</Label>
-              <Input id="duration" type="number" min={0} value={durationSeconds} onChange={e => setDurationSeconds(e.target.value)} />
+              <Input className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="duration" type="number" min={0} value={durationSeconds} onChange={e => setDurationSeconds(e.target.value)} />
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="desc">Description</Label>
-              <Textarea id="desc" value={description} onChange={e => setDescription(e.target.value)} placeholder="Optional details or instructions" />
+              <Textarea className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="desc" value={description} onChange={e => setDescription(e.target.value)} placeholder="Optional details or instructions" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="video">Video file</Label>
-              <Input id="video" type="file" accept="video/*" onChange={e => setVideoFile(e.target.files?.[0] ?? null)} />
+              <Input className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="video" type="file" accept="video/*" onChange={e => setVideoFile(e.target.files?.[0] ?? null)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="thumb">Thumbnail URL (optional)</Label>
-              <Input id="thumb" value={thumbnailUrl} onChange={e => setThumbnailUrl(e.target.value)} placeholder="https://..." />
+              <Input className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="thumb" value={thumbnailUrl} onChange={e => setThumbnailUrl(e.target.value)} placeholder="https://..." />
             </div>
           </div>
           <div className="flex gap-2">
@@ -252,15 +252,15 @@ const ExercisesTab = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Exercise Library</CardTitle>
+      <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+        <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+          <CardTitle className="text-white">Exercise Library</CardTitle>
         </CardHeader>
         <CardContent>
           {loadingVideos ? (
-            <div className="text-sm text-muted-foreground">Loading videos...</div>
+            <div className="text-sm text-white/60">Loading videos...</div>
           ) : videos.length === 0 ? (
-            <div className="text-sm text-muted-foreground">No videos uploaded yet.</div>
+            <div className="text-sm text-white/60">No videos uploaded yet.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -285,9 +285,9 @@ const ExercisesTab = () => {
                           <DialogTrigger asChild>
                             <Button variant="outline" size="sm" onClick={() => setPreviewFor(v.id)}>Preview</Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-2xl">
+                          <DialogContent className="max-w-2xl bg-white">
                             <DialogHeader>
-                              <DialogTitle>{v.title}</DialogTitle>
+                              <DialogTitle className="text-black">{v.title}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-3">
                               <AspectRatio ratio={16/9}>
@@ -299,7 +299,7 @@ const ExercisesTab = () => {
                                 />
                               </AspectRatio>
                               {v.description && (
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{v.description}</p>
+                                <p className="text-sm text-neutral-600 whitespace-pre-wrap">{v.description}</p>
                               )}
                             </div>
                           </DialogContent>
@@ -308,18 +308,18 @@ const ExercisesTab = () => {
                           <DialogTrigger asChild>
                             <Button size="sm" variant="default" onClick={() => openAssign(v.id)}>Assign</Button>
                           </DialogTrigger>
-                          <DialogContent>
+                          <DialogContent className="bg-white">
                             <DialogHeader>
-                              <DialogTitle>Assign "{v.title}" to patient</DialogTitle>
+                              <DialogTitle className="text-black">Assign "{v.title}" to patient</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4">
                               <div className="space-y-2">
                                 <Label>Patient</Label>
                                 <Select value={selectedPatient} onValueChange={setSelectedPatient}>
-                                  <SelectTrigger>
+                                  <SelectTrigger className="bg-white border-emerald-200 text-black">
                                     <SelectValue placeholder="Choose patient" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="bg-white border-emerald-200 text-black">
                                     {patients.map(p => (
                                       <SelectItem key={p.user_id} value={p.user_id}>{p.full_name || p.user_id}</SelectItem>
                                     ))}
@@ -329,11 +329,11 @@ const ExercisesTab = () => {
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                   <Label htmlFor="due">Due date</Label>
-                                  <Input id="due" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
+                                  <Input className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="due" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
                                   <Label htmlFor="notes">Notes</Label>
-                                  <Textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional notes for the patient" />
+                                  <Textarea className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional notes for the patient" />
                                 </div>
                               </div>
                               <div className="flex justify-end gap-2">

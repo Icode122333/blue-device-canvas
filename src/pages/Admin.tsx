@@ -24,6 +24,8 @@ interface Profile {
   user_id: string;
   role: string;
   onboarding_completed: boolean;
+  username?: string | null;
+  full_name?: string | null;
 }
 
 interface SimpleUser { user_id: string; username: string | null }
@@ -193,7 +195,7 @@ const Admin = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading admin...</p>
+          <p className="mt-2 text-neutral-600">Loading admin...</p>
         </div>
       </div>
     );
@@ -211,10 +213,10 @@ const Admin = () => {
             <CardTitle>Access denied</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-neutral-600">
               Your account does not have permission to access the admin panel.
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-neutral-600 mt-2">
               Current role: <span className="font-medium">{profile?.role ?? "unknown"}</span>
             </p>
             <a href="/" className="inline-block mt-4">
@@ -227,64 +229,64 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-secondary/20">
-      <div className="mx-auto max-w-6xl p-4">
-        <div className="mb-6 p-4 clay-card">
-          <h1 className="text-2xl font-semibold">Physio Admin Panel</h1>
-          <p className="text-sm text-muted-foreground">Manage appointments, CHW assignments, and reports.</p>
+    <div className="min-h-screen bg-gray-50/50 pb-20">
+      {/* Top Banner Profile Section */}
+      <div className="bg-emerald-900 text-white w-full border-b-[6px] border-amber-500">
+        <div className="mx-auto max-w-7xl px-4 py-8 md:py-12 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
+            <div className="w-20 h-20 bg-amber-500 rounded-full flex items-center justify-center text-black text-3xl font-extrabold border-4 border-emerald-800 shadow-xl overflow-hidden">
+              {profile?.username ? profile.username.charAt(0).toUpperCase() : 'P'}
+            </div>
+            <div className="pt-2">
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Welcome back, {profile?.username || 'Doctor'}!</h1>
+              <p className="text-emerald-200/80 mt-1 max-w-lg text-sm md:text-base">Your Physio Dashboard. Manage appointments, process patient assessments, and oversee community health worker assignments.</p>
+            </div>
+          </div>
+          <div className="flex flex-row gap-3 w-full md:w-auto overflow-x-auto pb-2 -mb-2 scrollbar-none">
+            <div className="bg-emerald-900/60 px-5 py-3 rounded-2xl border border-emerald-800 flex-1 md:flex-none min-w-[120px] text-center md:text-left backdrop-blur-sm">
+              <div className="text-xs font-semibold text-emerald-300 uppercase tracking-widest mb-1">Patients</div>
+              <div className="text-3xl font-light tracking-tighter">{patientCount ?? "—"}</div>
+            </div>
+            <div className="bg-emerald-900/60 px-5 py-3 rounded-2xl border border-emerald-800 flex-1 md:flex-none min-w-[120px] text-center md:text-left backdrop-blur-sm">
+              <div className="text-xs font-semibold text-emerald-300 uppercase tracking-widest mb-1">CHWs</div>
+              <div className="text-3xl font-light tracking-tighter">{chwCount ?? "—"}</div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Overview widgets */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <Card className="clay-card">
-            <CardHeader>
-              <CardTitle>Total Patients</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{patientCount ?? "—"}</div>
-            </CardContent>
-          </Card>
-          <Card className="clay-card">
-            <CardHeader>
-              <CardTitle>Total CHWs</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{chwCount ?? "—"}</div>
-            </CardContent>
-          </Card>
-        </div>
-
+      <div className="mx-auto max-w-7xl px-4 pt-6 md:pt-10">
         <Tabs defaultValue="appointments">
-          <div className="overflow-x-auto -mx-1 px-1">
-            <TabsList className="clay-card flex-nowrap">
-              <TabsTrigger value="appointments">Appointments</TabsTrigger>
-              <TabsTrigger value="assignments">CHW Assignments</TabsTrigger>
-              <TabsTrigger value="patients">Patients</TabsTrigger>
-              <TabsTrigger value="reports">Reports</TabsTrigger>
-              <TabsTrigger value="assessment">Assessment</TabsTrigger>
-              <TabsTrigger value="exercises">Exercises</TabsTrigger>
-              <TabsTrigger value="questions">Questions</TabsTrigger>
+          <div className="overflow-x-auto pb-4 mb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+            <TabsList className="flex w-max min-w-full bg-emerald-800 border border-emerald-700 p-1.5 rounded-2xl shadow-sm gap-1 overflow-visible">
+              <TabsTrigger value="appointments" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Appointments</TabsTrigger>
+              <TabsTrigger value="assignments" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Assignments</TabsTrigger>
+              <TabsTrigger value="patients" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Patients</TabsTrigger>
+              <TabsTrigger value="reports" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Reports</TabsTrigger>
+              <TabsTrigger value="assessment" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Assessments</TabsTrigger>
+              <TabsTrigger value="exercises" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Exercises</TabsTrigger>
+              <TabsTrigger value="questions" className="data-[state=active]:bg-amber-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-md rounded-xl px-5 py-2.5 transition-all text-sm font-medium text-white/70 hover:bg-emerald-700">Questions</TabsTrigger>
             </TabsList>
           </div>
 
-          <TabsContent value="appointments" className="mt-4">
+          <TabsContent value="appointments" className="mt-4 focus-visible:outline-none">
             <AppointmentsTab />
           </TabsContent>
 
-          <TabsContent value="assignments" className="mt-4">
-            <Card className="clay-card">
-              <CardHeader>
-                <CardTitle>CHW Assignments</CardTitle>
+          <TabsContent value="assignments" className="mt-4 focus-visible:outline-none">
+            <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+              <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+                <CardTitle className="text-white">CHW Team Assignments</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <CardContent className="space-y-6 pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end bg-emerald-900/40 p-4 rounded-xl border border-emerald-700">
                   <div className="space-y-2">
-                    <div className="text-sm text-muted-foreground">Select CHW (by username)</div>
+                    <div className="text-sm text-white/70">Select CHW (by username)</div>
                     <Select value={selectedChw} onValueChange={onSelectChw}>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white border-emerald-200 text-black">
                         <SelectValue placeholder="Choose CHW" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white border-emerald-200 text-black">
                         {chws.map(c => (
                           <SelectItem key={c.user_id} value={c.user_id}>
                             {c.username || c.user_id}
@@ -295,13 +297,13 @@ const Admin = () => {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <div className="text-sm text-muted-foreground">Assign Patient (by username)</div>
+                    <div className="text-sm text-white/70">Assign Patient (by username)</div>
                     <div className="flex gap-2">
                       <Select value={selectedPatient} onValueChange={setSelectedPatient}>
-                        <SelectTrigger className="min-w-[200px]">
+                        <SelectTrigger className="min-w-[200px] bg-white border-emerald-200 text-black">
                           <SelectValue placeholder="Choose patient" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-white border-emerald-200 text-black">
                           {patients.map(p => (
                             <SelectItem key={p.user_id} value={p.user_id}>
                               {p.username || p.user_id}
@@ -309,7 +311,7 @@ const Admin = () => {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Button onClick={assignPatient} disabled={!selectedChw || !selectedPatient} className="clay-button">Assign</Button>
+                      <Button onClick={assignPatient} disabled={!selectedChw || !selectedPatient} className="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold rounded-xl shadow-sm px-6">Assign</Button>
                     </div>
                   </div>
                 </div>
@@ -317,9 +319,9 @@ const Admin = () => {
                 <div className="mt-4">
                   <div className="text-sm font-medium mb-2">Assigned Patients</div>
                   {(!selectedChw) ? (
-                    <p className="text-sm text-muted-foreground">Select a CHW to view assignments.</p>
+                    <p className="text-sm text-white/60">Select a CHW to view assignments.</p>
                   ) : assignedPatients.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No patients assigned.</p>
+                    <p className="text-sm text-white/60">No patients assigned.</p>
                   ) : (
                     <div className="overflow-x-auto">
                       <Table className="min-w-[640px]">
@@ -336,7 +338,7 @@ const Admin = () => {
                               <TableCell>{p.username || "—"}</TableCell>
                               <TableCell><code className="text-xs">{p.user_id}</code></TableCell>
                               <TableCell className="text-right">
-                                <Button variant="outline" size="sm" onClick={() => unassignPatient(p.user_id)} className="clay-button">Unassign</Button>
+                                <Button variant="outline" size="sm" onClick={() => unassignPatient(p.user_id)} className="text-red-300 hover:text-red-200 hover:bg-red-900/30 border-red-400/50">Unassign</Button>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -349,12 +351,12 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="patients" className="mt-4">
-            <Card className="clay-card">
-              <CardHeader>
-                <CardTitle>Patients</CardTitle>
+          <TabsContent value="patients" className="mt-4 focus-visible:outline-none">
+            <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+              <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+                <CardTitle className="text-white">Patient Directory</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <div className="overflow-x-auto">
                   <Table className="min-w-[640px]">
                     <TableHeader>
@@ -372,40 +374,40 @@ const Admin = () => {
                           <TableCell className="text-right">
                             <Dialog open={patientDetailOpen && detailPatientId === p.user_id} onOpenChange={(open) => { if (!open) { setPatientDetailOpen(false); setDetailPatientId(null); } }}>
                               <DialogTrigger asChild>
-                                <Button size="sm" onClick={() => openPatientDetail(p.user_id)} className="clay-button">View</Button>
+                                <Button size="sm" onClick={() => openPatientDetail(p.user_id)} className="bg-amber-500 text-emerald-950 hover:bg-amber-400 shadow-none border-0 font-semibold">View Record</Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-2xl clay-card">
+                              <DialogContent className="max-w-2xl bg-white border-0 shadow-2xl rounded-2xl">
                                 <DialogHeader>
-                                  <DialogTitle>Patient Details</DialogTitle>
+                                  <DialogTitle className="text-xl text-black flex items-center gap-2">Patient Details {p.username && <Badge variant="secondary" className="bg-amber-100 text-amber-900 ml-2">{p.username}</Badge>}</DialogTitle>
                                 </DialogHeader>
                                 <div className="space-y-4">
                                   <div>
-                                    <div className="text-sm text-muted-foreground">Onboarding</div>
+                                    <div className="text-sm text-amber-400 font-semibold">Onboarding</div>
                                     {!detailOnboarding ? (
                                       <div className="text-sm">No onboarding data.</div>
                                     ) : (
                                       <div className="text-sm grid grid-cols-2 gap-2">
-                                        <div><span className="text-muted-foreground">Full Name:</span> {detailOnboarding.full_name}</div>
-                                        <div><span className="text-muted-foreground">Mother Phone:</span> {detailOnboarding.mother_phone}</div>
-                                        <div><span className="text-muted-foreground">Age:</span> {detailOnboarding.age}</div>
-                                        <div><span className="text-muted-foreground">Problem Noticed:</span> {new Date(detailOnboarding.problem_first_noticed).toLocaleDateString()}</div>
+                                        <div><span className="text-neutral-400">Full Name:</span> {detailOnboarding.full_name}</div>
+                                        <div><span className="text-neutral-400">Mother Phone:</span> {detailOnboarding.mother_phone}</div>
+                                        <div><span className="text-neutral-400">Age:</span> {detailOnboarding.age}</div>
+                                        <div><span className="text-neutral-400">Problem Noticed:</span> {new Date(detailOnboarding.problem_first_noticed).toLocaleDateString()}</div>
                                       </div>
                                     )}
                                   </div>
                                   <div>
                                     <div className="text-sm font-medium mb-1">Assessments</div>
                                     {detailAssessments.length === 0 ? (
-                                      <div className="text-sm text-muted-foreground">No assessments yet.</div>
+                                      <div className="text-sm text-neutral-400">No assessments yet.</div>
                                     ) : (
                                       <div className="space-y-2">
                                         {detailAssessments.map(a => (
                                           <div key={a.id} className="border rounded p-2 text-sm">
                                             <div className="flex items-center justify-between">
                                               <div>
-                                                <span className="text-muted-foreground mr-2">Date:</span>
+                                                <span className="text-neutral-400 mr-2">Date:</span>
                                                 {new Date(a.created_at).toLocaleString()}
                                               </div>
-                                              <div className="text-muted-foreground text-xs">
+                                              <div className="text-neutral-400 text-xs">
                                                 physio_id: <code>{a.physio_id}</code>
                                               </div>
                                             </div>
@@ -429,16 +431,16 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="reports" className="mt-4">
-            <Card className="clay-card">
-              <CardHeader>
-                <CardTitle>Reports</CardTitle>
+          <TabsContent value="reports" className="mt-4 focus-visible:outline-none">
+            <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+              <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+                <CardTitle className="text-white">CHW Field Reports</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 {loadingReports ? (
-                  <div className="text-sm text-muted-foreground">Loading...</div>
+                  <div className="text-sm text-white/60">Loading...</div>
                 ) : reports.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">No reports submitted.</div>
+                  <div className="text-sm text-white/60">No reports submitted.</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table className="min-w-[880px]">
@@ -468,11 +470,12 @@ const Admin = () => {
                               {r.attachment_url ? (
                                 <a href={r.attachment_url} target="_blank" rel="noreferrer" className="underline text-sm">View</a>
                               ) : (
-                                <span className="text-muted-foreground text-sm">—</span>
+                                <span className="text-white/40 text-sm">—</span>
                               )}
                             </TableCell>
                             <TableCell>
                               <Textarea
+                                className="bg-emerald-900/50 border-emerald-600 text-white placeholder:text-white/40"
                                 rows={2}
                                 placeholder="Write admin comment..."
                                 value={commentById[r.id] ?? r.admin_comment ?? ''}
@@ -485,14 +488,14 @@ const Admin = () => {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => reviewReport(r.id, undefined, commentById[r.id] ?? r.admin_comment ?? '')}
-                                  className="clay-button"
+                                  className="bg-emerald-700 text-white hover:bg-emerald-600 border-0"
                                 >
                                   Save Comment
                                 </Button>
                                 <Button
                                   size="sm"
                                   onClick={() => reviewReport(r.id, 'reviewed', commentById[r.id] ?? r.admin_comment ?? '')}
-                                  className="clay-button"
+                                  className="bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold"
                                 >
                                   Approve
                                 </Button>
@@ -508,15 +511,15 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="assessment" className="mt-4">
+          <TabsContent value="assessment" className="mt-6 focus-visible:outline-none">
             <PatientAssessmentForm />
           </TabsContent>
 
-          <TabsContent value="exercises" className="mt-4">
+          <TabsContent value="exercises" className="mt-6 focus-visible:outline-none">
             <ExercisesTab />
           </TabsContent>
 
-          <TabsContent value="questions" className="mt-4">
+          <TabsContent value="questions" className="mt-6 focus-visible:outline-none">
             <QuestionsTab />
           </TabsContent>
         </Tabs>

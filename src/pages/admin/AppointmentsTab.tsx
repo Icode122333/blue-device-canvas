@@ -110,9 +110,9 @@ export default function AppointmentsTab() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Pending Appointments</CardTitle>
+    <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+      <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+        <CardTitle className="text-white">Pending Appointments</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -142,35 +142,35 @@ export default function AppointmentsTab() {
                   {/* Approve with Meet link dialog */}
                   <Dialog open={approveForId === a.id} onOpenChange={(open) => !open && setApproveForId(null)}>
                     <DialogTrigger asChild>
-                      <Button size="sm" onClick={() => openApprove(a.id)}>Approve</Button>
+                      <Button size="sm" onClick={() => openApprove(a.id)} className="bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold">Approve</Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="bg-white">
                       <DialogHeader>
-                        <DialogTitle>Approve appointment</DialogTitle>
+                        <DialogTitle className="text-black">Approve appointment</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-2">
-                        <label className="text-sm text-muted-foreground" htmlFor="meetLink">Google Meet link (optional)</label>
+                        <label className="text-sm text-neutral-500" htmlFor="meetLink">Google Meet link (optional)</label>
                         <Input id="meetLink" placeholder="https://meet.google.com/xyz-abcd-efg" value={meetLink} onChange={(e) => setMeetLink(e.target.value)} />
                       </div>
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setApproveForId(null)}>Cancel</Button>
-                        <Button onClick={confirmApprove}>Approve</Button>
+                        <Button variant="outline" onClick={() => setApproveForId(null)} className="border-emerald-200 text-neutral-700">Cancel</Button>
+                        <Button onClick={confirmApprove} className="bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold">Approve</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                   {/* Reject with reason dialog */}
                   <Dialog open={rejectForId === a.id} onOpenChange={(open) => !open && setRejectForId(null)}>
                     <DialogTrigger asChild>
-                      <Button size="sm" variant="outline" onClick={() => openReject(a.id)}>Reject</Button>
+                      <Button size="sm" variant="outline" onClick={() => openReject(a.id)} className="text-red-700 border-red-200 hover:bg-red-50">Reject</Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="bg-white">
                       <DialogHeader>
-                        <DialogTitle>Provide rejection reason</DialogTitle>
+                        <DialogTitle className="text-black">Provide rejection reason</DialogTitle>
                       </DialogHeader>
                       <Textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="Explain why this appointment is denied" />
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setRejectForId(null)}>Cancel</Button>
-                        <Button onClick={confirmReject}>Submit</Button>
+                        <Button variant="outline" onClick={() => setRejectForId(null)} className="border-emerald-200 text-neutral-700">Cancel</Button>
+                        <Button onClick={confirmReject} className="bg-red-700 hover:bg-red-800 text-white">Submit</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>

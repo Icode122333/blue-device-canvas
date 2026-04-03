@@ -82,9 +82,9 @@ export default function QuestionsTab() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Assigned Questions</CardTitle>
+    <Card className="bg-emerald-800 border-0 shadow-lg rounded-2xl overflow-hidden text-white">
+      <CardHeader className="bg-emerald-900/60 border-b border-amber-500/30 pb-5">
+        <CardTitle className="text-white">Assigned Questions</CardTitle>
       </CardHeader>
       <CardContent>
         {/* Unassigned section (triage) */}
@@ -110,7 +110,7 @@ export default function QuestionsTab() {
                   <TableCell><code className="text-xs">{q.user_id}</code></TableCell>
                   <TableCell className="max-w-[520px] whitespace-pre-wrap">{q.content}</TableCell>
                   <TableCell className="text-right">
-                    <Button size="sm" onClick={() => assignToMe(q.id)}>Assign to me</Button>
+                    <Button size="sm" onClick={() => assignToMe(q.id)} className="bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold">Assign to me</Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -140,15 +140,15 @@ export default function QuestionsTab() {
                 <TableCell className="text-right">
                   <Dialog open={replyForId === q.id} onOpenChange={(open) => !open && setReplyForId(null)}>
                     <DialogTrigger asChild>
-                      <Button size="sm" variant="outline" onClick={() => { setReplyForId(q.id); setReplyText(""); }}>Reply</Button>
+                      <Button size="sm" variant="outline" onClick={() => { setReplyForId(q.id); setReplyText(""); }} className="border-amber-400/50 text-amber-300 hover:bg-emerald-700">Reply</Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="bg-white">
                       <DialogHeader>
-                        <DialogTitle>Reply to question</DialogTitle>
+                        <DialogTitle className="text-black">Reply to question</DialogTitle>
                       </DialogHeader>
-                      <Textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="Write your reply..." />
+                      <Textarea className="bg-white border-emerald-200 text-black placeholder:text-neutral-400" value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="Write your reply..." />
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setReplyForId(null)}>Cancel</Button>
+                        <Button variant="outline" onClick={() => setReplyForId(null)} className="border-emerald-200 text-neutral-700">Cancel</Button>
                         <Button onClick={async () => {
                           if (!replyText.trim()) {
                             toast({ title: "Reply required", description: "Please enter your reply.", variant: "destructive" });
